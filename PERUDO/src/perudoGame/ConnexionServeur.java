@@ -104,8 +104,8 @@ public class ConnexionServeur implements Runnable{
 				}
 				break;
 			}
-			String reponse = "hey";
-			this.envoyer(client,reponse);
+			
+			this.envoyer(client,GestionProtocole.traiter(recu));
 		}
 	}
 }
