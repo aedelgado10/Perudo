@@ -1,2 +1,0 @@
-# Perudo
-Jeu du Perudo
