@@ -48,7 +48,7 @@ public class PDU {
 	public static final String APLUS = "APLUS";
 	//demander pseudo
 	public static final String PSEUDOP = "PSEUDO";
-	//demande pseudo réussie
+	//demande pseudo réussiee
 	public static final String PSEUDO_OK = "PSEUDO_OK";
 	//demande pseudo rejetée
 	public static final String PSEUDO_REJ = "PSEUDO_REJ";
