@@ -51,7 +51,7 @@ public class ConnexionServeur implements Runnable{
 	/**
 	 * 
 	 * @param s
-	 * @return String larequete
+	 * @return String la requete
 	 */
 	public String recevoir(Socket client){
 		

@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 public class Serveur {
 
 	public Serveur() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public static void main(String[] args) {
