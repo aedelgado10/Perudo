@@ -10,6 +10,8 @@ import java.io.PrintStream;
 public class ConnexionServeur implements Runnable{
 
 	Socket client = null;
+	String recu;
+	GestionProtocole gP;
 	
 	/**
 	 * @return socketService s
@@ -26,9 +28,10 @@ public class ConnexionServeur implements Runnable{
 		}
 	}
 	
-	public ConnexionServeur(ServerSocket s){
+	public ConnexionServeur(ServerSocket s, GestionProtocole gP){
 		super();
 		this.attendreClient(s);
+		this.gP = gP;
 	}
 	
 	/**
@@ -93,8 +96,11 @@ public class ConnexionServeur implements Runnable{
 
 	@Override
 	public void run() {
+		String reponse;
+		
+		//Traitement d'un client i
 		while (true){
-			String recu = this.recevoir(this.client);
+			this.recu = this.recevoir(this.client);
 			if (recu.equals("quit")){
 				try {
 					this.client.close();
@@ -104,8 +110,13 @@ public class ConnexionServeur implements Runnable{
 				}
 				break;
 			}
-			
-			this.envoyer(client,GestionProtocole.traiter(recu));
+			else{
+				reponse = gP.traiter(recu);
+			}
 		}
+	}
+	
+	public Socket getSocket(){
+		return this.client;
 	}
 }

@@ -1,5 +1,12 @@
 package perudoGame;
 
+/**
+ * 
+ * @author Pereira William
+ * @version : 1
+ * @
+ */
+
 public class PDU {
 	
 	//Créer une partie 
@@ -48,13 +55,10 @@ public class PDU {
 	public static final String APLUS = "APLUS";
 	//demander pseudo
 	public static final String PSEUDOP = "PSEUDO";
-	//demande pseudo réussiee
+	//demande pseudo réussie
 	public static final String PSEUDO_OK = "PSEUDO_OK";
 	//demande pseudo rejetée
 	public static final String PSEUDO_REJ = "PSEUDO_REJ";
-
-	
-	
 	
 	//Creer joueur
 	public static final String CREATE_PLAYER = "CREATE_PLAYER";
