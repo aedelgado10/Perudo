@@ -1,0 +1,24 @@
+package perudoGameClient;
+
+import java.net.ServerSocket;
+
+public class Serveur {
+
+	public Serveur() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		ConnexionServeur cxServeur;
+		int port = 27019;
+		ServerSocket s = ConnexionServeur.ouvrir(port);
+		System.out.println("[Serveur v0] Actif");
+		
+		while (s != null){
+			cxServeur = new ConnexionServeur(s);
+			Thread t = new Thread(cxServeur);
+			t.start();
+		}
+	}
+
+}
