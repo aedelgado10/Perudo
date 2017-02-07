@@ -38,6 +38,20 @@ public class Client {
 			return null;
 		}
 	}
+	
+	public static int menuPrincipal(){
+		Scanner reader = new Scanner(System.in);
+		int choix;
+		do{
+			System.out.println("Vous pouvez soit:");
+			System.out.println("Taper 1 : Créer Partie");
+			System.out.println("Taper 2 : Rejoindre Partie");
+			System.out.println("Taper 3 : Quitter serveur");
+			choix = reader.nextInt();
+		}while(choix < 1 || choix > 3);
+		reader.close();
+		return choix;
+	}
 
 	
 	public static void main (String args[]) {
@@ -45,7 +59,6 @@ public class Client {
 		ConnexionClient connexion = new ConnexionClient();
 		GestionProtocoleClient gP = new GestionProtocoleClient();
 		ArrayList<String> reponses = new ArrayList<String>();
-		Scanner reader = new Scanner(System.in);
 		int choix;
 		
 		connexion.ConnecterServeur();
@@ -56,12 +69,8 @@ public class Client {
 			System.out.println(s);
 		}
 		
-		do{
-			System.out.println("Vous pouvez soit:");
-			System.out.println("Taper 1 : Créer Partie");
-			System.out.println("Taper 2 : Rejoindre Partie");
-			System.out.println("Taper 3 : Quitter serveur");
-			choix = reader.nextInt();
+		
+		choix = menuPrincipal();
 			switch(choix){
 				case 1:
 					reponses = faireDemande(connexion, PDU.CREATE_PARTY, gP);
@@ -81,19 +90,7 @@ public class Client {
 				default:
 					System.out.println("Ressayez:");
 			}
-			
-		}while(choix < 1 || choix > 3);
-		reader.close();
-		
-		
-		
-	
-		
-		
-		
-		
-		
-		
+
 		connexion.FermerConnexionServeur();
 	}
 }

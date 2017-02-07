@@ -2,6 +2,13 @@ package perudoGameClient;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Pereira
+ * @version 1 
+ *
+ */
+
 public class GestionProtocoleClient extends PDU{
 	
 	ArrayList<String> positiveAnswers;
