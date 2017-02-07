@@ -134,4 +134,55 @@ public class GestionProtocoleClient extends PDU{
 		return 0;
 	}
 	
+	public String createParty(){
+		return PDU.CREATE_PARTY;
+	}
+	
+	public String joinParty(){
+		return PDU.JOIN_PARTY;
+	}
+	
+	public String getColor(){
+		return PDU.WHICH_COLOR;
+	}
+	
+	public String launchParty(){
+		return PDU.LAUNCH;
+	}
+	
+	public String ttPile(){
+		return PDU.TTPILE;
+	}
+	
+	public String getId(){
+		return PDU.GET_ID;
+	}
+	
+	public String menteur(){
+		return PDU.LIAR;
+	}
+	
+	public String surencherir(){
+		return PDU.PLUS;
+	}
+	
+	public String rollDices(){
+		return PDU.ROLL;
+	}
+	
+	public String listRooms(){
+		return PDU.LISTROOMS;
+	}
+	
+	public String pseudoP(){
+		return PDU.PSEUDOP;
+	}
+	
+	public String leaveParty(){
+		return PDU.LEAVE;
+	}
+	
+	public String stopParty(){
+		return PDU.STOP_PARTY;
+	}
 }

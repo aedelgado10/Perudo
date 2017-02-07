@@ -12,11 +12,39 @@ import java.util.Scanner;
  */
 public class Client {
 	
-	public static void envoiDemande(String ipdu, ConnexionClient connexion){
+	private GestionProtocoleClient gPc;
+	private Partie p1;
+	private Joueur j1;
+	
+	public Client(){
+		this.gPc = new GestionProtocoleClient();
+	}
+	
+	public GestionProtocoleClient getGPC(){
+		return this.gPc;
+	}
+	
+	public Partie getP1() {
+		return p1;
+	}
+
+	public void setP1(Partie p1) {
+		this.p1 = p1;
+	}
+
+	public Joueur getJ1() {
+		return j1;
+	}
+
+	public void setJ1(Joueur j1) {
+		this.j1 = j1;
+	}
+	
+	public void envoiDemande(String ipdu, ConnexionClient connexion){
 		connexion.envoyer(ipdu);
 	}
 	
-	public static ArrayList<String> receptionDemande(ConnexionClient connexion){
+	public ArrayList<String> receptionDemande(ConnexionClient connexion){
 		ArrayList<String> requete = new ArrayList<>();
 		PDU iPDU = new PDU();
 		
@@ -25,12 +53,12 @@ public class Client {
 		return requete;
 	}
 	
-	public static ArrayList<String> faireDemande(ConnexionClient connexion, String ipdu, GestionProtocoleClient gP){
+	public ArrayList<String> faireDemande(ConnexionClient connexion, String ipdu){
 		int i;
 		ArrayList<String> rep;
 		envoiDemande(ipdu, connexion);
 		rep = receptionDemande(connexion);
-		i = gP.repAttendue(rep,ipdu);
+		i = this.getGPC().repAttendue(rep,ipdu);
 		if(i == 1){
 			return rep;
 		}
@@ -39,16 +67,16 @@ public class Client {
 		}
 	}
 	
-	public static int menuPrincipal(){
+	public int menuPrincipal(){
 		Scanner reader = new Scanner(System.in);
 		int choix;
-		do{
-			System.out.println("Vous pouvez soit:");
-			System.out.println("Taper 1 : Créer Partie");
-			System.out.println("Taper 2 : Rejoindre Partie");
-			System.out.println("Taper 3 : Quitter serveur");
-			choix = reader.nextInt();
-		}while(choix < 1 || choix > 3);
+		
+		System.out.println("Vous pouvez soit:");
+		System.out.println("Taper 1 : Créer Partie");
+		System.out.println("Taper 2 : Rejoindre Partie");
+		System.out.println("Taper 3 : Quitter serveur");
+		choix = reader.nextInt();
+		
 		reader.close();
 		return choix;
 	}
@@ -56,21 +84,42 @@ public class Client {
 	
 	public static void main (String args[]) {
 		
-		ConnexionClient connexion = new ConnexionClient();
-		GestionProtocoleClient gP = new GestionProtocoleClient();
-		ArrayList<String> reponses = new ArrayList<String>();
-		int choix;
-		
+		Client client = new Client();
+		ConnexionClient connexion = new ConnexionClient(client);
 		connexion.ConnecterServeur();
+
+		int choix;
+		ArrayList<String> reponse = new ArrayList<String>();
 		
-		reponses = faireDemande(connexion, PDU.LISTROOMS, gP);
+		do{
+			choix = client.menuPrincipal();
+			switch (choix){
+				case 1:
+					System.out.println("Vous avez choisi de creer une Partie.");
+					reponse = client.faireDemande(connexion, client.getGPC().createParty());
+					if(client.getGPC().isPositive(reponse.get(0))){
+						client.setP1(new Partie(Integer.parseInt(reponse.get(1))));
+						System.out.println("Partie Crée avec Succès");
+					}
+					else{
+						System.out.println("Le serveur a rejeté votre demande de creation.");
+						choix = 0;
+					}	
+					break;
+				default:
+					System.out.println("Vous devez choisir un des trois choix proposés");
+					break;
+			}
+	    }while(choix < 1 || choix > 3);
+		
+		/*reponses = faireDemande(connexion, PDU.LISTROOMS, gP);
 		System.out.println("Voici la liste des Salles disponibles.");
 		for (String s : reponses.subList(1, reponses.size())){
 			System.out.println(s);
-		}
+		}*/
 		
 		
-		choix = menuPrincipal();
+		/*choix = client.menuPrincipal();
 			switch(choix){
 				case 1:
 					reponses = faireDemande(connexion, PDU.CREATE_PARTY, gP);
@@ -84,12 +133,11 @@ public class Client {
 					}
 					else{
 						System.out.println("Le serveur a rejeté votre demande de creation");
-						choix = 0;
 					}
 					break;
 				default:
 					System.out.println("Ressayez:");
-			}
+			}*/
 
 		connexion.FermerConnexionServeur();
 	}

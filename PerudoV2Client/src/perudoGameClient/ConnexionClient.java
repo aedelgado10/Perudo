@@ -5,7 +5,16 @@ import java.net.*;
 public class ConnexionClient {
 	
 	//Variable pour stocker le Socket
-	Socket sock;
+	private Socket sock;
+	private Client cli;
+	
+	public ConnexionClient(Client c){
+		this.cli = c;
+	}
+	
+	public Client getClient(){
+		return this.cli;
+	}
 	
 	//Crée une connexion avec le serveur
 	public void ConnecterServeur() {
