@@ -2,14 +2,14 @@ package perudoGameClient;
 import java.io.*;
 import java.net.*;
 
-public class ConnexionClient {
+public class ConnexionClient implements Runnable{
 	
 	//Variable pour stocker le Socket
 	private Socket sock;
 	private Client cli;
 	
-	public ConnexionClient(Client c){
-		this.cli = c;
+	public ConnexionClient(Client cli){
+		this.cli = cli;
 	}
 	
 	public Client getClient(){
@@ -17,17 +17,8 @@ public class ConnexionClient {
 	}
 	
 	//Crée une connexion avec le serveur
-	public void ConnecterServeur() {
-		
-		try{
-			this.sock = new Socket("127.0.0.1", 27019);
-			System.out.println("Connect� sur : "+ sock);
-			
-		 } 
-		 catch (IOException ex){
-			 System.err.println("Erreur : "+ex);
-			 ex.printStackTrace();
-		 }
+	public void ConnecterServeur() throws IOException {
+		this.sock = new Socket("127.0.0.1", 27019);
 	}
 	
 	//Ferme la connexion de façon propre
@@ -74,6 +65,14 @@ public class ConnexionClient {
 			ex.printStackTrace();
 		}
 		
+	}
+
+	@Override
+	public void run(){
+		while (true){
+			String recu = this.recevoir();
+			this.getClient().traiter(recu);	
+		}
 	}
 	
 	

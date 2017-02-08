@@ -46,7 +46,7 @@ public class GestionProtocoleClient extends PDU{
 	}
 	
 	//Teste si la reponse a la demande est coherente
-	public int repAttendue(ArrayList<String> rep, String ipdu){
+	public int repCoherente(ArrayList<String> rep, String ipdu){
 		
 		switch(ipdu){
 			case PDU.LISTROOMS:
@@ -135,11 +135,11 @@ public class GestionProtocoleClient extends PDU{
 	}
 	
 	public String createParty(){
-		return PDU.CREATE_PARTY;
+		return CREATE_PARTY;
 	}
 	
 	public String joinParty(){
-		return PDU.JOIN_PARTY;
+		return JOIN_PARTY;
 	}
 	
 	public String getColor(){
