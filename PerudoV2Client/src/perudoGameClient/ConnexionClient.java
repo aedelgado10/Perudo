@@ -18,7 +18,7 @@ public class ConnexionClient implements Runnable{
 	
 	//Crée une connexion avec le serveur
 	public void ConnecterServeur() throws IOException {
-		this.sock = new Socket("127.0.0.1", 27019);
+		this.sock = new Socket("172.20.10.6", 27016);
 	}
 	
 	//Ferme la connexion de façon propre
@@ -39,15 +39,22 @@ public class ConnexionClient implements Runnable{
 		
 		BufferedReader fluxEntreeSocket;
 		String reponse;
-		try{
-			fluxEntreeSocket = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
-			reponse = fluxEntreeSocket.readLine();
-			return reponse;
+		if(this.sock != null){
+			try{
+				fluxEntreeSocket = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
+				reponse = fluxEntreeSocket.readLine();
+				return reponse;
+			}
+			catch(SocketException se){
+				System.out.println("Socket ferm�e");
+				return null;
+			}
+			catch (IOException ex){
+				System.err.println("Erreur : "+ex);
+				ex.printStackTrace();
+			}
 		}
-		catch (IOException ex){
-			System.err.println("Erreur : "+ex);
-			ex.printStackTrace();
-		}
+
 		
 		return null;
 	}
@@ -56,13 +63,16 @@ public class ConnexionClient implements Runnable{
 	public void envoyer(String pdu){
 		
 		PrintStream fluxSortieSocket;
-		try{
-			fluxSortieSocket = new PrintStream(this.sock.getOutputStream());
-			fluxSortieSocket.println(pdu);
-		}
-		catch (IOException ex){
-			System.err.println("Erreur : "+ex);
-			ex.printStackTrace();
+		
+		if(this.sock != null){
+			try{
+				fluxSortieSocket = new PrintStream(this.sock.getOutputStream());
+				fluxSortieSocket.println(pdu);
+			}
+			catch (IOException ex){
+				System.err.println("Erreur : "+ex);
+				ex.printStackTrace();
+			}
 		}
 		
 	}
@@ -71,7 +81,12 @@ public class ConnexionClient implements Runnable{
 	public void run(){
 		while (true){
 			String recu = this.recevoir();
-			this.getClient().traiter(recu);	
+			if(recu != null){
+				this.getClient().traiter(recu,this);
+			}
+			else{
+				break;
+			}
 		}
 	}
 	

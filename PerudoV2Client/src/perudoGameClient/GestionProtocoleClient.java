@@ -14,6 +14,7 @@ public class GestionProtocoleClient extends PDU{
 	ArrayList<String> positiveAnswers;
 	
 	public GestionProtocoleClient(){
+		this.positiveAnswers = new ArrayList<String>();
 		this.positiveAnswers.add(PDU.ROOMS);
 		this.positiveAnswers.add(JOIN_OK);
 		this.positiveAnswers.add(OK_LEAVE);
@@ -27,8 +28,7 @@ public class GestionProtocoleClient extends PDU{
 		this.positiveAnswers.add(ID);
 		this.positiveAnswers.add(DICES);
 		this.positiveAnswers.add(PARTY_CANCELLED);
-		
-		
+		this.positiveAnswers.add(OKPARTY);
 	}
 	
 	//après utilisation repAttendue, cette methode sert a savoir
@@ -127,7 +127,12 @@ public class GestionProtocoleClient extends PDU{
 					return 1;
 				}
 				break;
-			
+			case PDU.CREATE_PARTY:
+				//reponse compatible
+				if(rep.get(0).equals(PDU.OKPARTY) || rep.get(0).equals(PDU.REJPARTY)){
+					return 1;
+				}
+				break;
 			default:
 				return 0;
 		}

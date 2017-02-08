@@ -41,10 +41,10 @@ public class Client {
 		Scanner reader = new Scanner(System.in);
 		int choix;
 		do{
-			choix = reader.nextInt();
 			this.afficherMenuClientConnecte();
-			reader.close();
+			choix = reader.nextInt();
 		}while(choix > 3 || choix < 1);
+		//reader.close();
 		return choix;
 	}
 	
@@ -53,10 +53,10 @@ public class Client {
 		Scanner reader = new Scanner(System.in);
 		int choix;
 		do{
-			choix = reader.nextInt();
 			this.afficherMenuClientNonConnecte();
-			reader.close();
+			choix = reader.nextInt();
 		}while(choix > 2 || choix < 1);
+		//reader.close();
 		return choix;
 	}
 	
@@ -87,18 +87,20 @@ public class Client {
 	}
 	
 	//traite la réponse et reinitialise la dernière demande a vide
-	public void traiter(String recu){
-		ArrayList<String> repDecompose = new ArrayList<String>();
+	public void traiter(String recu, ConnexionClient cx){
+		ArrayList<String> repDecompose;
+		System.out.println("recu: " + recu);
 		repDecompose = this.getGPC().decomposer(recu);
-		if(this.getGPC().isPositive(this.getLastPduSent())){
+		System.out.println("rep: " + repDecompose.get(0) + " ");
+		if(this.getGPC().isPositive(repDecompose.get(0))){
 			this.setLastPduSent("");
-			this.gererJeu(repDecompose);
+			this.gererJeu(repDecompose,cx);
 		}
 		else{
 			switch(this.getLastPduSent()){
 				case PDU.CREATE_PARTY:
 					System.out.println("Impossible de creer la partie.");
-					this.traiterMenuChoix();
+					this.traiterMenuChoix(cx, true);
 					break;
 				default:
 					break;
@@ -108,8 +110,11 @@ public class Client {
 	}
 	
 	//Si la reponse du serveur est positive, on traite la suite
-	public void gererJeu(ArrayList<String> rep){
-		
+	public void gererJeu(ArrayList<String> rep, ConnexionClient cx){
+		//System.out.println("YEAH partie crée .l.");
+		//System.out.println("ID partie: " + rep.get(1));
+		this.envoyer(cx, PDU.LAUNCH);
+		System.out.println("vaina: " + rep.get(0));
 	}
 	
 	//Méthode qui est lancée par le main si l'utilisateur choisit créer partie
@@ -119,24 +124,27 @@ public class Client {
 	}
 	
 	//traitement de la selection du menu choix
-	public void traiterMenuChoix(){
-		int choix = this.menuChoix();
+	public void traiterMenuChoix(ConnexionClient cx, boolean b){
+		int choix;
 		
-		switch(choix){
-		case 1:
-			//client.creerPartie();
-			break;
-		case 2:
-			//client.rejoindrePartie();
-			break;
-		default:
-			break;
+		while(b){
+			choix = this.menuChoix();
+			switch(choix){
+			case 1:
+				this.creerPartie(cx);
+				break;
+			case 2:
+				//client.rejoindrePartie();
+				break;
+			default:
+				b = false;
+				break;
+			}
 		}
 	}
 	
 	// Debut du client
 	public static void main (String args[]) {
-		
 		
 		Client client = new Client();
 		ConnexionClient cx = new ConnexionClient(client);
@@ -150,8 +158,7 @@ public class Client {
 			try{
 				client.connecterServeur(cx);
 				t.start();
-				client.traiterMenuChoix();
-				//RajouterFonctionFermer Connexion
+				client.traiterMenuChoix(cx, true);
 				cx.FermerConnexionServeur();
 			}catch(IOException e){
 				System.err.println("Erreur : " + e);
