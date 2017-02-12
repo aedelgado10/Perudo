@@ -57,7 +57,6 @@ public class Serveur {
 				}
 			}
 		}
-		
 		return resultat;
 	}
 	

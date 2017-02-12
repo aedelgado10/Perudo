@@ -8,7 +8,6 @@ import java.util.ArrayList;
  * @version 1
  * 
  */
-
 public class Gobelet{
 	
 	private CouleurAbstract color;

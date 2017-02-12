@@ -16,7 +16,6 @@ public abstract class CouleurAbstract {
 		this.codeCouleur = code;
 	}
 	
-	
 	public void setCodeCouleur(String code){
 		this.codeCouleur = code;
 	}

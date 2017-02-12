@@ -87,7 +87,6 @@ public class PDU {
 		while (s.hasMoreTokens()){
 			requete.add(s.nextToken());
 		}
-		
 		return requete;
 	}
 	
