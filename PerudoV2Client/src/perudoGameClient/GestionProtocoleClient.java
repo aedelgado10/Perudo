@@ -19,8 +19,7 @@ public class GestionProtocoleClient extends PDU{
 		this.positiveAnswers.add(JOIN_OK);
 		this.positiveAnswers.add(OK_LEAVE);
 		this.positiveAnswers.add(BEGIN_PARTY);
-		this.positiveAnswers.add(COLOR_OK);
-		this.positiveAnswers.add(COLORLIST);
+		this.positiveAnswers.add(COLOR);
 		this.positiveAnswers.add(PSEUDO_OK);
 		this.positiveAnswers.add(TTPILE_OK);
 		this.positiveAnswers.add(LIAR_OK);
@@ -75,13 +74,7 @@ public class GestionProtocoleClient extends PDU{
 				break;
 			case PDU.WHICH_COLOR:
 				//reponse compatible
-				if(rep.get(0).equals(PDU.COLORLIST)){
-					return 1;
-				}
-				break;
-			case PDU.COLOR:
-				//reponse compatible
-				if(rep.get(0).equals(PDU.COLOR_OK) || rep.get(0).equals(PDU.COLOR_KO)){
+				if(rep.get(0).equals(PDU.COLOR)){
 					return 1;
 				}
 				break;
@@ -143,8 +136,8 @@ public class GestionProtocoleClient extends PDU{
 		return CREATE_PARTY;
 	}
 	
-	public String joinParty(){
-		return JOIN_PARTY;
+	public String joinParty(int i){
+		return JOIN_PARTY + " " + i;
 	}
 	
 	public String getColor(){
@@ -191,7 +184,4 @@ public class GestionProtocoleClient extends PDU{
 		return PDU.STOP_PARTY;
 	}
 	
-	public String choisirCouleur(String couleur){
-		return PDU.COLOR + " " + couleur;
-	}
 }
