@@ -13,14 +13,23 @@ public class Partie {
 	
 	private int id;
 	private String status;
-	private String AdressePartie; /*c pour le p2p*/
+	private String AdressePartie; /*c'est pour le p2p*/
 	private String nom;
 	private ArrayList<Joueur> listeJoueurs;
 	private Joueur joueurCourant;
+	private boolean partyLeader;
 	
 	public Partie(int id){
 		this.id= id;
 		this.listeJoueurs = new ArrayList<>();
+	}
+	
+	public void setPartyLeader(boolean b){
+		this.partyLeader = b;
+	}
+	
+	public boolean getPartyLeader(){
+		return this.partyLeader;
 	}
 	
 	public int getIdPartie() {

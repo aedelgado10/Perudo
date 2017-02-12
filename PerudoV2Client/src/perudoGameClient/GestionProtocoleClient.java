@@ -179,8 +179,8 @@ public class GestionProtocoleClient extends PDU{
 		return PDU.LISTROOMS;
 	}
 	
-	public String pseudoP(){
-		return PDU.PSEUDOP;
+	public String pseudoP(String s){
+		return PDU.PSEUDOP + " " + s;
 	}
 	
 	public String leaveParty(){
@@ -189,5 +189,9 @@ public class GestionProtocoleClient extends PDU{
 	
 	public String stopParty(){
 		return PDU.STOP_PARTY;
+	}
+	
+	public String choisirCouleur(String couleur){
+		return PDU.COLOR + " " + couleur;
 	}
 }
