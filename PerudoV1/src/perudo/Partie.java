@@ -12,6 +12,7 @@ public class Partie {
 	private String status;
 	private Hashtable<Socket,Joueur> listeJoueurs;
 	private Joueur joueurCourant;
+	private ArrayList<Couleur> listeCouleursDispo = new ArrayList<>();
 	/**
 	 * @return the joueurCourant
 	 */
@@ -25,6 +26,13 @@ public class Partie {
 		this.id = 0;
 		this.status = "Pas de partie";
 		this.listeJoueurs = new Hashtable<Socket,Joueur>(6);
+		
+		this.listeCouleursDispo.add(new Red());
+		this.listeCouleursDispo.add(new Blue());
+		this.listeCouleursDispo.add(new Green());
+		this.listeCouleursDispo.add(new Orange());
+		this.listeCouleursDispo.add(new Purple());
+		this.listeCouleursDispo.add(new Yellow());
 	}
 	
 	/**
@@ -179,24 +187,11 @@ public class Partie {
 	
 	public Couleur genererCouleurPourJoueur(){
 		Random r = new Random();
-		int c  = r.nextInt(6) + 1;
+		int i  = r.nextInt(6);
 		
-		switch(c){
-		case 1:
-			return new Red();
-		case 2:
-			return new Blue();
-		case 3:
-			return new Green();
-		case 4:
-			return new Orange();
-		case 5:
-			return new Purple();
-		case 6:
-			return new Yellow();
-		default:
-			return new Red();
-		}
+		Couleur c = this.listeCouleursDispo.remove(i);
+		
+		return c;
 	}
 	
 	/**
@@ -204,33 +199,14 @@ public class Partie {
 	 * @param j
 	 * @return
 	 */
-	public Couleur setCouleur(Joueur j){
-		boolean est_possedee = true;
-		int k = 0;
-		Couleur c = new Couleur("default");
+	public String setCouleur(Joueur j){
 		
-		while (est_possedee){
-			Enumeration<Joueur> e = this.getListeJoueurs().elements();
-			
-			c = this.genererCouleurPourJoueur();
-			while(e.hasMoreElements()){
-				Joueur courant = e.nextElement();
-				if (courant.equals(j)){
-					continue;
-				}
-				if (courant.getCouleur() == c){
-					est_possedee = true;
-					break;
-				}else{
-					k++;
-				}
-			}
-			
-			if (k == this.getListeJoueurs().size()-1){
-				est_possedee = false;
-			}
-		}
-		return c;	
+		Couleur c = this.genererCouleurPourJoueur();
+		j.setCouleur(c);
+		return c.getCodeCouleur();
 	}
-
+	
+	public boolean hasColor(Joueur j){
+		return j.hasColor();
+	}
 }

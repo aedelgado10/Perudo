@@ -47,11 +47,8 @@ public class PDU {
 	public static final String NOFNP = "NO_FRIENDS_NO_PARTY";		// On démarre pas une partie avec <2 joueurs
 	public static final String PLS = "PLS";							// Le client n'est pas prêt
 	/* Lister les couleurs */
-	public static final String WHICH_COLOR = "COLOR?";				// demander couleurs dispos
-	public static final String COLORLIST = "COLORLIST";				// retour liste des couleurs
+	public static final String WHICH_COLOR = "COLOR?";				// demander sa couleur
 	public static final String COLOR = "COLOR";
-	public static final String COLOR_OK = "COLOR_OK";
-	public static final String COLOR_KO = "COLOR_KO";
 	
 	/* Lancer les dés */
 	public static final String ROLL = "ROLL";						// Lancer les dés
@@ -81,6 +78,7 @@ public class PDU {
 	
 	/* Demande mal-placée */
 	public static final String DEBUG_IT = "DEBUG_IT";				// Ca ne devrait pas arriver
+	public static final String QUIT = "QUIT";
 	
 	public ArrayList<String> decomposer(String cmd){
 		ArrayList<String> requete = new ArrayList<String>();

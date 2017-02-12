@@ -93,5 +93,9 @@ public class Joueur {
 	public void retirerDe(){
 		this.gobelet.retirerDe();
 	}
+	
+	public boolean hasColor(){
+		return (this.getCouleur().getCodeCouleur().equals("undefined")) ? false: true;
+	}
 
 }

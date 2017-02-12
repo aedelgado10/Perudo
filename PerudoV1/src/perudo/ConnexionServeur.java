@@ -65,10 +65,17 @@ public class ConnexionServeur implements Runnable{
 			try {
 				in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				String req = in.readLine();
+				
+				if (req.equals(null)){
+					return PDU.QUIT;
+				}
 				return req;
 			} catch (IOException e) {
-				System.out.println("[Serveur] Erreur lors de la rÃ©ception ou Ã  l'instantiation du flux d'entrée");
-				return "quit";
+				System.out.println("[ConnexionServeur] Erreur lors de la réception ou à l'instantiation du flux d'entrée");
+				return PDU.QUIT;
+			}catch(NullPointerException npe){
+				System.out.println("[ConnexionServeur] Le client envoie \"null\" et va être déconnecté");
+				return PDU.QUIT;
 			}
 		}
 		return "quit";
@@ -87,7 +94,6 @@ public class ConnexionServeur implements Runnable{
 			try {
 				client.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}catch(NullPointerException n){
@@ -100,29 +106,20 @@ public class ConnexionServeur implements Runnable{
 		System.out.println("Client connecté");
 		while (true){
 			String recu = this.recevoir(this.client);
+			String reponse = serveur.traiter(recu,this.client);
 			
-			if (recu.equals("quit")){
+			if (reponse.equals(PDU.QUIT)){
 				try {
 					serveur.getListeClients().remove(client);
 					serveur.supprimerJoueur(client);
 					this.client.close();
 					System.out.println("Client déconnecté!");
+					break;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				break;
-			}else{
-				String reponse = serveur.traiter(recu,this.client);
-				
-				if (reponse.equals("BEGIN_PARTY")){
-					serveur.demarrerPartie();
-					for (Socket client_i: serveur.getListeClients()){
-						ConnexionServeur.repondre(client_i,reponse);
-					}
-				}else{
-					ConnexionServeur.repondre(client,reponse);
-				}
 			}
+			ConnexionServeur.repondre(client,reponse);		//Réponse au Client_i (on ne répond pas QUIT au client)
 		}
 	}
 }

@@ -43,11 +43,22 @@ public class Serveur {
 	 * @return String produit de GestionProtocole
 	 */
 	public String traiter(String cmd,Socket client){
-		return this.getGP().traiter(cmd,client,p);
-	}
-	
-	public void demarrerPartie(){
-		this.p.premierAJouer();
+		System.out.println("[Serveur.traiter] Recu: " + cmd);
+		String resultat = this.getGP().traiter(cmd,client,p);
+		System.out.println("[Serveur.traiter] Réponse: "+ resultat);
+		if (p.getStatus() == PDU.PARTYPLAYING){
+			
+		}else if (resultat.equals(GestionProtocole.BEGIN_PARTY)){
+			//On débute la partie
+			p.setEnCours();
+			for (Socket client_i: this.getListeClients()){
+				if (!client.equals(client_i)){
+					ConnexionServeur.repondre(client_i,resultat);
+				}
+			}
+		}
+		
+		return resultat;
 	}
 	
 	public ArrayList<Socket> getListeClients(){

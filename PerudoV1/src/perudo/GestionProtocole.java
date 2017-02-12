@@ -19,23 +19,23 @@ public class GestionProtocole extends PDU{
 					
 					switch(requete){
 						
-						case PDU.JOIN_PARTY:
+						case JOIN_PARTY:
 							
 							String resultat = p.rejoindrePartie(client);
 							if (resultat.equals("0")){
-								return GestionProtocole.JOIN_REJ;
+								return JOIN_REJ;
 							}else{
 								return resultat;
 							}
 							
-						case PDU.GET_ID:
+						case GET_ID:
 							if (p.isDejaDansPartie(client)){
-								return GestionProtocole.ID + " " + p.getListeJoueurs().get(client).getID();
+								return ID + " " + p.getListeJoueurs().get(client).getID();
 							}else{
 								return WHATSUP + " il faut d'abord rejoindre la partie!";
 							}
 						
-						case PDU.CREATE_PARTY:
+						case CREATE_PARTY:
 							return REJPARTY;
 						
 						case PSEUDOP:
@@ -46,39 +46,44 @@ public class GestionProtocole extends PDU{
 								return PSEUDO_OK;
 							}
 							
-						case PDU.LISTROOMS:
+						case LISTROOMS:
 							return ROOMS + " " + p.getID()+ ":"+ p.getStatus() + ":"+ p.getNbJoueurs()+ "/6";
 							
 						case WHICH_COLOR:
-							return COLOR + " " + p.setCouleur(p.getJoueur(client));
+							if (p.isDejaDansPartie(client)){
+								if (!p.hasColor(p.getJoueur(client))){
+									return COLOR + " " + p.setCouleur(p.getJoueur(client));	
+								}else{
+									return COLOR + " " + p.getJoueur(client).getCouleur().getCodeCouleur();
+								}
+							}else{
+								return WHATSUP + " Vous n'êtes pas dans la partie !";
+							}
 							
 						case LAUNCH:
 							if (p.isCreateur(p.getJoueur(client))){
-								if ((p.isFriendlyParty())){
+								if ((p.isFriendlyParty())){	// Il y a Joueurs > 1 dans la partie
 									Enumeration<Joueur> e = p.getListeJoueurs().elements();
 									
 									while (e.hasMoreElements()){
 										if (e.nextElement().getCouleur().getCodeCouleur().equals("undefined")){
-											return PLS;
+											return PLS;	//Joueur non prêt !
 										}
 									}
-									p.setEnCours();
-							
 									return BEGIN_PARTY;
 								}else{
-									return NOFNP;
+									return NOFNP;	// <1 Joueur dans la partie
 								}
 							}else{
 								return WHATSUP + " Vous n'avez pas le droit d'effectuer cette action!";
 							}
+						case QUIT:
+							return QUIT;
 						default:
-							return GestionProtocole.WHATSUP;
+							return WHATSUP;
 					}
 					
-				case COLOR:
-					
-				
-				case PDU.FULL:			//La partie est pleine
+				case FULL:			//La partie est pleine
 					return GestionProtocole.FULL;
 				
 				case PDU.PARTYPLAYING:// partie en cours!
@@ -96,11 +101,18 @@ public class GestionProtocole extends PDU{
 					p.creerPartie();
 					p.ajouterJoueur(client);
 					p.setCreateur(p.getJoueur(client));
+					System.out.println("[GestionProtocole] Une partie vient d'être créée!");
 					return OKPARTY + " " + p.getID();
 
 				case PDU.GET_ID:
+					System.out.println("[GestionProtocole] Un id a été demandé mais le client n'est pas dans une partie");
 					return WHATSUP + " Il faut d'abord créer ou rejoindre la partie !";
+				case QUIT:
+					System.out.println("[GestionProtocole] Le client se déconnecte");
+					return QUIT;
+
 				default:
+					System.out.println("[GestionProtocole] La demande n'a pas été comprise; aucune partie en cours");
 					return GestionProtocole.WHATSUP;
 			}
 		}
