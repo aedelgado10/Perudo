@@ -80,6 +80,15 @@ public class Partie {
 		this.joueurCourant = joueurCourrant;
 	}
 	
+	//ajouter joueur 1 par 1
+	public void ajouterJoueur(Joueur j){
+		if (this.listeJoueurs.size() < 6)
+			this.listeJoueurs.add(j);
+	}
+	
+	//METHODES POUR LA V3 CLIENT
+	/*
+	
 	//Choisir Joueur qui commence (aleatoire)
 	public void premierAJouer(){
 		int j;
@@ -90,16 +99,6 @@ public class Partie {
 		}
 	}
 	
-	//ajouter joueur 1 par 1
-	public void ajouterJoueur(Joueur j){
-		if (this.listeJoueurs.size() < 6)
-			this.listeJoueurs.add(j);
-	}
-	
-	//Demander la liste des joueurs au Gestionneur de Protocole
-	/*public ArrayList<Joueur> demanderListeJoueurs(GestionProtocole gP){
-		return gP.getListeJoueur();
-	}*/
 	
 	//connaitre la valeur surencherie précedement
 	public ArrayList<Integer> derniereValeurJouee(){
@@ -259,6 +258,8 @@ public class Partie {
 			return true;
 			
 	}
+	
+	*/
 	
 	
 

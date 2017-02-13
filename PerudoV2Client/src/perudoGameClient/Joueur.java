@@ -1,6 +1,7 @@
 package perudoGameClient;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * 
@@ -10,12 +11,14 @@ import java.util.ArrayList;
 public class Joueur {
 	private String pseudo;
 	private int id;
+	private boolean leader;
 	Gobelet gobelet;
 	private ArrayList<Integer> valeursChoisies;
 	
-	public Joueur(int id,Couleur c){
+	public Joueur(int id,Couleur c, boolean l){
 		this.id = id;
 		this.gobelet = new Gobelet(c);
+		this.leader = l;
 		this.valeursChoisies = new ArrayList<>();
 	}
 
@@ -31,6 +34,44 @@ public class Joueur {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public boolean getLeader() {
+		return this.leader;
+	}
+	public void setLeader(boolean b) {
+		this.leader = b;
+	}
+	
+	//Voir mon dernier surenchère fait
+	public ArrayList<Integer> dernieresValeursChoisies(){
+		return this.valeursChoisies; 
+	}
+	
+	//Menu pour le Leader
+	public void afficherMenuLeaderAvantDemarrer(){
+		System.out.println("Vous �tes les Leader, vous pouvez:");
+		System.out.println("Taper 1: Lancer Partie");
+		System.out.println("Taper 2: Voir Joueurs");
+		System.out.println("Taper 3: Annuler Partie");
+	}
+	
+	
+	public int menuChoixLeaderAvantDemarrer(){
+		
+		Scanner scan = new Scanner(System.in);
+		int choix;
+		do{
+		  this.afficherMenuLeaderAvantDemarrer();
+		  choix = scan.nextInt();
+		}while(choix > 3 || choix < 1);	
+		
+		return choix;
+	}
+	
+	
+	
+	//METHODES CALCUL POUR LA V3 DU CLIENT
+	/*
 	
 	//ça revient à lancer dés
 	public void secouerGobelet(){
@@ -65,10 +106,7 @@ public class Joueur {
 		this.valeursChoisies.add(valeurDe);
 	}
 	
-	//Voir mon dernier surenchère fait
-	public ArrayList<Integer> dernieresValeursChoisies(){
-		return this.valeursChoisies; 
-	}
+	
 	
 	// methode pour tester dans le main
 	public String afficherValeursChoisies(){
@@ -89,4 +127,5 @@ public class Joueur {
 	public void retirerDe(){
 		this.gobelet.retirerDe();
 	}
+	*/
 }

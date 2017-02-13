@@ -19,6 +19,8 @@ public class Client {
 	private Partie p1;
 	private Couleur c1;
 	private int cptTry;
+	private boolean clientTourne;
+
 
 	
 	//Constructeur Client
@@ -26,6 +28,15 @@ public class Client {
 		this.gPc = new GestionProtocoleClient();
 		this.lastPduSent = "";
 		this.cptTry = 0;
+		this.clientTourne = true;
+	}
+	
+	public boolean getClientTourne(){
+		return this.clientTourne;
+	}
+	
+	public void setClientTourneFalse(){
+		this.clientTourne = false;
 	}
 	
 	//Recupérer la gestion protocole client
@@ -43,29 +54,26 @@ public class Client {
 		this.lastPduSent = ipdu;
 	}
 	
-	//Menu de choix d'action après connexion au serveur
-	public int menuChoix(){
-		
-		Scanner scan = new Scanner(System.in);
-		int choix;
-		do{
-		  this.afficherMenuClientConnecte();
-		  choix = scan.nextInt();
-		}while(choix > 3 || choix < 1);	
-		
-		return choix;
+	//méthode de connexion client - serveur
+	public void connecterServeur(ConnexionClient cx) throws IOException{
+		cx.ConnecterServeur();
 	}
 	
-	//Menu affiché a l'ouverture du Client
-	public int menuPrincipal(){
-		
-		int choix;
-		Scanner scan = new Scanner(System.in);
-		do{
-		  this.afficherMenuClientNonConnecte();
-		  choix = scan.nextInt();
-		}while(choix > 2 || choix < 1);	
-		return choix;
+	//Envoie la demande, stocke celle ci
+	public void envoyer(ConnexionClient cx, String ipdu){
+		cx.envoyer(ipdu);
+		String[] splited = ipdu.split("\\s+");
+		System.out.println("plit: " + splited[0] + " lel: " +ipdu);
+		this.setLastPduSent(splited[0]);
+	}
+	
+	//reset le compteur de tentatives apres erreur
+	public void resetCptTry(){
+		this.cptTry = 0;
+	}
+	
+	public void cptTryPlusUn(){
+		this.cptTry++;
 	}
 	
 	//Affichage Menu Connecté
@@ -83,26 +91,32 @@ public class Client {
 		System.out.println("Taper 2 : Quitter");
 	}
 	
-	//méthode de connexion client - serveur
-	public void connecterServeur(ConnexionClient cx) throws IOException{
-		cx.ConnecterServeur();
+	//Menu affiché a l'ouverture du Client
+	public int menuPrincipal(){
+		
+		int choix;
+		Scanner scan = new Scanner(System.in);
+		do{
+		  this.afficherMenuClientNonConnecte();
+		  choix = scan.nextInt();
+		}while(choix > 2 || choix < 1);	
+		return choix;
 	}
 	
-	//Envoie la demande, stocke celle ci
-	public void envoyer(ConnexionClient cx, String ipdu){
-		cx.envoyer(ipdu);
-		String[] splited = ipdu.split("\\s+");
-		this.setLastPduSent(splited[0]);
+	//Menu de choix d'action après connexion au serveur
+	public int menuChoix(){
+		
+		Scanner scan = new Scanner(System.in);
+		int choix;
+		do{
+		  this.afficherMenuClientConnecte();
+		  choix = scan.nextInt();
+		}while(choix > 3 || choix < 1);	
+		
+		return choix;
 	}
 	
-	//reset le compteur de tentatives apres erreur
-	public void resetCptTry(){
-		this.cptTry = 0;
-	}
-	
-	public void cptTryPlusUn(){
-		this.cptTry++;
-	}
+		
 	
 	//traite la réponse et reinitialise la dernière demande a vide
 	public void traiter(String recu, ConnexionClient cx){
@@ -122,34 +136,44 @@ public class Client {
 				switch(this.getLastPduSent()){
 					case PDU.CREATE_PARTY:
 						System.out.println("Impossible de creer la partie.");
-						this.traiterMenuChoix(cx, true);
+						this.traiterMenuChoix(cx);
 						break;
 					case PDU.WHICH_COLOR:
 						//cas improbable
 						System.out.println("Il n'y a plus de couleurs disponibles, jeté?");
-						this.traiterMenuChoix(cx, true);
+						this.traiterMenuChoix(cx);
 						break;
 					case PDU.GET_ID:
 						System.out.println("Pas d'ID attribué, jeté?");
-						this.traiterMenuChoix(cx, true);
+						this.traiterMenuChoix(cx);
 						break;
-					case PDU.PSEUDO_KO:
+					case PDU.PSEUDOP:
 						System.out.println("Ce pseudo n'est pas disponible!");
 						this.j1.setNom(this.saisirPseudo());
 						this.demanderPseudo(this.j1.getPseudo(), cx);
 						break;
 					case PDU.LISTROOMS:
 						System.out.println("Pas de parties trouvées pour l'instant!");
-						this.traiterMenuChoix(cx, true);
+						this.traiterMenuChoix(cx);
 						break;
 					case PDU.JOIN_PARTY:
 						System.out.println("Impossible de rejoindre cette partie");
-						this.traiterMenuChoix(cx, true);
+						this.p1 = null;
+						this.traiterMenuChoix(cx);
+						break;
+					case PDU.LAUNCH:
+						System.out.println("Impossible de lancer la partie (Clients non prêts / vous êtes seul)");
+						this.traiterDemandeJoueur(j1, cx);
+						break;
+					case PDU.STOP_PARTY:
+						System.out.println("Demande d'arrêt rejeté");
+						this.traiterDemandeJoueur(j1, cx);
+						break;
 					default:
 						break;
 				}
 				this.resetCptTry();
-				this.setLastPduSent("");
+				//this.setLastPduSent("");
 			}
 		}
 		else{
@@ -159,7 +183,8 @@ public class Client {
 			}else{
 				//Ce cas ne devrait jamais arriver
 				System.out.println("Le serveur est Fou! Ce client va être tué");
-				this.traiterMenuChoix(cx, false);
+				this.setClientTourneFalse();
+				cx.FermerConnexionServeur();
 			}
 		}
 	}
@@ -191,21 +216,61 @@ public class Client {
 			  this.demandeIDJoueur(cx);
 			  break;
 		  case PDU.ID:
-			  this.j1 = new Joueur(Integer.parseInt(rep.get(1)),this.c1);
+			  this.j1 = new Joueur(Integer.parseInt(rep.get(1)),this.c1,p1.getPartyLeader());
 			  this.j1.setNom(this.saisirPseudo());
 			  this.demanderPseudo(this.j1.getPseudo(), cx);
 			  break;
 		  case PDU.PSEUDO_OK:
 			  System.out.println("Votre pseudo est validé: " + this.j1.getPseudo());
 			  this.p1.ajouterJoueur(this.j1);
-			  if (p1.getPartyLeader()){
+			  if (j1.getLeader()){
 				  // Vous êtes le leader, voulez vous lancer?
-				  System.out.println("Vous êtes le leader, c'est a vous de Lancer!");
+				  System.out.println("Vous êtes le Leader, c'est a vous de demarrer le jeu!");
+				  this.traiterDemandeJoueur(j1, cx);
 			  }
 			  else{
-				  System.out.println("Le Leader va bientôt lancer la partie, patienter...");
+				  System.out.println("Le Leader va bientôt demarrer la partie, patienter...");
 			  }
 			  break;
+		  case PDU.BEGIN_PARTY:
+			  System.out.println("Party Begins, get ready to roll!!");
+			  p1.setStatus(PDU.PARTYPLAYING);
+			  //roll dices
+			  //lastpdu = vide
+			  break;
+			  
+		  case PDU.PARTY_CANCELLED:
+			  System.out.println("La partie a été annulé...");
+			  this.setLastPduSent("");
+			  this.p1=null;
+			  this.j1=null;
+			  this.traiterMenuChoix(cx);
+			  break;
+		}
+	}
+	
+	// traitement demande du leader
+	public void traiterDemandeJoueur(Joueur j, ConnexionClient cx){
+		int choix;
+		//if party began?
+	
+		if(j.getLeader()){
+			choix = j.menuChoixLeaderAvantDemarrer();
+			switch(choix){
+			   case 1: 
+				   this.demandeDemarrer(cx);
+				   break;
+			   case 2: 
+				   break;
+			   case 3:
+				   this.demandeAnnuler(cx);
+				   //b = false;
+				   break;
+			   default:
+				   //ça ne devrait jamais arriver, la fonction est bornée
+				   System.out.println("Erreur, saisie traitement leader");
+				   break;
+			}
 		}
 	}
 	
@@ -217,6 +282,15 @@ public class Client {
 		}
 	}
 	
+	//Demande a l'utilisateur de rentrer un pseudo
+	public String saisirPseudo(){
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Saisir votre pseudo:");
+		String pseudo = "";
+		pseudo = scan.next();
+		return pseudo;
+	}
+	
 	//choix partie a rejoindre
 	public int choixPartie(ArrayList<String> s){
 		int choix;
@@ -226,6 +300,17 @@ public class Client {
 		  choix = scan.nextInt();
 		}while(choix > s.size() || choix < 1);	
 		return choix;
+	}
+	
+	public void demandeAnnuler(ConnexionClient cx){
+		String ipdu = this.getGPC().stopParty();
+		this.envoyer(cx,ipdu);
+	}
+	
+	//Effectuer demande de démarer partie
+	public void demandeDemarrer(ConnexionClient cx){
+		String ipdu = this.getGPC().launchParty();
+		this.envoyer(cx,ipdu);
 	}
 	
 	//demande de joindre partie
@@ -240,14 +325,6 @@ public class Client {
 		this.envoyer(cx,ipdu);
 	}
 	
-	//Demande a l'utilisateur de rentrer un pseudo
-	public String saisirPseudo(){
-		Scanner scan = new Scanner(System.in);
-		System.out.println("Saisir votre pseudo:");
-		String pseudo = "";
-		pseudo = scan.next();
-		return pseudo;
-	}
 	
 	//demande d'identifiant de joueur
 	public void demandeIDJoueur(ConnexionClient cx){
@@ -274,10 +351,8 @@ public class Client {
 	}
 	
 	//traitement de la selection du menu choix
-	public void traiterMenuChoix(ConnexionClient cx, boolean b){
+	public void traiterMenuChoix(ConnexionClient cx){
 		int choix;
-		
-		if(b){
 			choix = this.menuChoix();
 			switch(choix){
 			case 1:
@@ -287,17 +362,11 @@ public class Client {
 				this.demanderListeParties(cx);
 				break;
 			default:
-				b = false;
 				System.out.println("Fermeture Client Perudo!");
+				this.setClientTourneFalse();
+				cx.FermerConnexionServeur();
 				break;
 			}
-		}
-		else{
-			System.out.println("Fermeture Client Perudo!");
-		}
-		while(b){
-			//pour que le programme ne s'arrête pas :)
-		}
 	}
 	
 	// Debut du client
@@ -306,7 +375,6 @@ public class Client {
 		ConnexionClient cx = new ConnexionClient(client);
 		Thread t = new Thread(cx);
 		
-		
 		System.out.println("Client Perudo Ouvert!");
 		int choix;
 		choix = client.menuPrincipal();
@@ -314,8 +382,8 @@ public class Client {
 			try{
 				client.connecterServeur(cx);
 				t.start();
-				client.traiterMenuChoix(cx, true);
-				cx.FermerConnexionServeur();
+				client.traiterMenuChoix(cx);
+				while( client.getClientTourne()); // maintient le client ouvert
 			}catch(IOException e){
 				System.err.println("Erreur : " + e);
 				//e.printStackTrace();

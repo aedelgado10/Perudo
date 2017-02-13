@@ -15,7 +15,7 @@ public class GestionProtocoleClient extends PDU{
 	
 	public GestionProtocoleClient(){
 		this.positiveAnswers = new ArrayList<String>();
-		this.positiveAnswers.add(PDU.ROOMS);
+		this.positiveAnswers.add(ROOMS);
 		this.positiveAnswers.add(JOIN_OK);
 		this.positiveAnswers.add(OK_LEAVE);
 		this.positiveAnswers.add(BEGIN_PARTY);
@@ -46,6 +46,10 @@ public class GestionProtocoleClient extends PDU{
 	
 	//Teste si la reponse a la demande est coherente
 	public int repCoherente(ArrayList<String> rep, String ipdu){
+		
+		if(rep.get(0).equals(BEGIN_PARTY) || rep.get(0).equals(PARTY_CANCELLED) ){
+			return 1;
+		}
 		
 		switch(ipdu){
 			case PDU.LISTROOMS:
