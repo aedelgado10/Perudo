@@ -13,7 +13,7 @@ public class Partie {
 	
 	private int id;
 	private String status;
-	private String AdressePartie; /*c'est pour le p2p*/
+	private String AdressePartie; /*c'est pour le p2p (v3)*/
 	private String nom;
 	private ArrayList<Joueur> listeJoueurs;
 	private Joueur joueurCourant;
@@ -80,11 +80,23 @@ public class Partie {
 		this.joueurCourant = joueurCourrant;
 	}
 	
+	//savoir si la partie est en cours
+	public boolean isPartyRunning(){
+		if(this.getStatus().equals(PDU.PARTYPLAYING)){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
 	//ajouter joueur 1 par 1
 	public void ajouterJoueur(Joueur j){
 		if (this.listeJoueurs.size() < 6)
 			this.listeJoueurs.add(j);
 	}
+	
+	
 	
 	//METHODES POUR LA V3 CLIENT
 	/*

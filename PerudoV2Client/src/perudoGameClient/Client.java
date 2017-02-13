@@ -225,15 +225,15 @@ public class Client {
 			  this.p1.ajouterJoueur(this.j1);
 			  if (j1.getLeader()){
 				  // Vous êtes le leader, voulez vous lancer?
-				  System.out.println("Vous êtes le Leader, c'est a vous de demarrer le jeu!");
+				  System.out.println("Vous êtes le Leader, c'est a vous de démarrer le jeu!");
 				  this.traiterDemandeJoueur(j1, cx);
 			  }
 			  else{
-				  System.out.println("Le Leader va bientôt demarrer la partie, patienter...");
+				  System.out.println("Le Leader va bientôt démarrer la partie, patienter...");
 			  }
 			  break;
 		  case PDU.BEGIN_PARTY:
-			  System.out.println("Party Begins, get ready to roll!!");
+			  System.out.println("La Partie commence, un joueur va être désigné pour commencer!!");
 			  p1.setStatus(PDU.PARTYPLAYING);
 			  //roll dices
 			  //lastpdu = vide
@@ -249,28 +249,32 @@ public class Client {
 		}
 	}
 	
-	// traitement demande du leader
+	// traitement demande des joueurs en fonction du status de la partie
 	public void traiterDemandeJoueur(Joueur j, ConnexionClient cx){
 		int choix;
 		//if party began?
-	
-		if(j.getLeader()){
-			choix = j.menuChoixLeaderAvantDemarrer();
-			switch(choix){
-			   case 1: 
-				   this.demandeDemarrer(cx);
-				   break;
-			   case 2: 
-				   break;
-			   case 3:
-				   this.demandeAnnuler(cx);
-				   //b = false;
-				   break;
-			   default:
-				   //ça ne devrait jamais arriver, la fonction est bornée
-				   System.out.println("Erreur, saisie traitement leader");
-				   break;
+	    if(!(p1.isPartyRunning())){
+			if(j.getLeader()){
+				choix = j.menuChoixLeaderAvantDemarrer();
+				switch(choix){
+				   case 1: 
+					   this.demandeDemarrer(cx);
+					   break;
+				   case 2: 
+					   break;
+				   case 3:
+					   this.demandeAnnuler(cx);
+					   //b = false;
+					   break;
+				   default:
+					   //ça ne devrait jamais arriver, la fonction est bornée
+					   System.out.println("Erreur, saisie traitement leader");
+					   break;
+				}
 			}
+		}else{
+			//cas 1er a jouer
+			//cas leader
 		}
 	}
 	
