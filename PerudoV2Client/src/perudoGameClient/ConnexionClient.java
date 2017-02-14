@@ -2,6 +2,12 @@ package perudoGameClient;
 import java.io.*;
 import java.net.*;
 
+/**
+ * 
+ * @author Pereira
+ *
+ */
+
 public class ConnexionClient implements Runnable{
 	
 	//Variable pour stocker le Socket
@@ -79,7 +85,7 @@ public class ConnexionClient implements Runnable{
 
 	@Override
 	public void run(){
-		while (true){
+		while (this.getClient().getClientTourne()){
 			String recu = this.recevoir();
 			if(recu != null){
 				this.getClient().traiter(recu,this);

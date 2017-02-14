@@ -4,7 +4,7 @@ package perudoGameClient;
 
 /**
  * 
- * @author Pereira-Delgado
+ * @author Pereira
  * @version 1
  *
  */

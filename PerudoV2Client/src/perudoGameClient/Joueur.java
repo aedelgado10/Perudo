@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 /**
  * 
- * @author Pereira-Delgado
+ * @author Pereira
  *
  */
 public class Joueur {

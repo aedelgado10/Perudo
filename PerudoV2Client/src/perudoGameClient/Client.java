@@ -201,7 +201,10 @@ public class Client {
 			  this.demanderCouleur(cx);
 			  break;
 		  case PDU.ROOMS:
-			  this.p1 = new Partie(this.choixPartie(rep));
+			  if (!(this.traiterChoixPartie(this.choixPartie(rep), rep, cx))){
+				  break;
+			  }
+			  //this.p1 = new Partie(this.choixPartie(rep));
 			  p1.setStatus(PDU.WAITING);
 			  p1.setPartyLeader(false);
 			  this.demanderRejoindre(p1.getIdPartie(), cx);
@@ -234,9 +237,9 @@ public class Client {
 			  break;
 		  case PDU.BEGIN_PARTY:
 			  System.out.println("La Partie commence, un joueur va être désigné pour commencer!!");
+			  //this.setLastPduSent("");
 			  p1.setStatus(PDU.PARTYPLAYING);
 			  //roll dices
-			  //lastpdu = vide
 			  break;
 			  
 		  case PDU.PARTY_CANCELLED:
@@ -278,12 +281,28 @@ public class Client {
 		}
 	}
 	
+	//traiter le choix de la partie
+	public boolean traiterChoixPartie(int i, ArrayList<String> rep, ConnexionClient cx){
+		if( i == rep.size() ){
+			this.traiterMenuChoix(cx);
+			return false;
+		}
+		else{
+			this.p1 = new Partie(i);
+			return true;
+		}
+	}
+	
 	//affiche la liste des parties
 	public void afficherListeParties(ArrayList<String> s){
 		System.out.println("Voici les parties: ");
-		for(String partie : s.subList(1, s.size())){
-			System.out.println(partie);
+		ArrayList<String> parser = new ArrayList<>();
+		for( String partie : s.subList(1, s.size()) ){
+			parser = this.gPc.parseListRooms(partie);
+			System.out.println("Tapper 1 pour rejoindre la partie: " + parser.get(0)
+			+ " avec status: " + parser.get(1) + " ("+parser.get(2)+")");
 		}
+		System.out.println("Tapper " + s.size() + " pour ne pas rejoindre");
 	}
 	
 	//Demande a l'utilisateur de rentrer un pseudo
