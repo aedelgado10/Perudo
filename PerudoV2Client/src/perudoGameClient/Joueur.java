@@ -47,28 +47,6 @@ public class Joueur {
 		return this.valeursChoisies; 
 	}
 	
-	//Menu pour le Leader
-	public void afficherMenuLeaderAvantDemarrer(){
-		System.out.println("Vous êtes les Leader, vous pouvez:");
-		System.out.println("Taper 1: Lancer Partie");
-		System.out.println("Taper 2: Voir Joueurs");
-		System.out.println("Taper 3: Annuler Partie");
-	}
-	
-	
-	public int menuChoixLeaderAvantDemarrer(){
-		
-		Scanner scan = new Scanner(System.in);
-		int choix;
-		do{
-		  this.afficherMenuLeaderAvantDemarrer();
-		  choix = scan.nextInt();
-		}while(choix > 3 || choix < 1);	
-		
-		return choix;
-	}
-	
-	
 	
 	//METHODES CALCUL POUR LA V3 DU CLIENT
 	/*

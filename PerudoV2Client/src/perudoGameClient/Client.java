@@ -258,7 +258,8 @@ public class Client {
 		//if party began?
 	    if(!(p1.isPartyRunning())){
 			if(j.getLeader()){
-				choix = j.menuChoixLeaderAvantDemarrer();
+				
+				choix = p1.menuChoixLeaderAvantDemarrer();
 				switch(choix){
 				   case 1: 
 					   this.demandeDemarrer(cx);

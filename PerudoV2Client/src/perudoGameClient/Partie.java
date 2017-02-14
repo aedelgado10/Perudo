@@ -2,6 +2,7 @@ package perudoGameClient;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * 
@@ -89,6 +90,28 @@ public class Partie {
 			return false;
 		}
 	}
+	
+	//Menu pour le Leader
+	public void afficherMenuLeaderAvantDemarrer(){
+		System.out.println("Vous êtes les Leader, vous pouvez:");
+		System.out.println("Taper 1: Lancer Partie");
+		System.out.println("Taper 2: Voir Joueurs");
+		System.out.println("Taper 3: Annuler Partie");
+	}
+	
+	
+	public int menuChoixLeaderAvantDemarrer(){
+		
+		Scanner scan = new Scanner(System.in);
+		int choix;
+		do{
+		  this.afficherMenuLeaderAvantDemarrer();
+		  choix = scan.nextInt();
+		}while(choix > 3 || choix < 1);	
+		
+		return choix;
+	}
+	
 	
 	//ajouter joueur 1 par 1
 	public void ajouterJoueur(Joueur j){
