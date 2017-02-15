@@ -63,7 +63,7 @@ public class Client {
 	public void envoyer(ConnexionClient cx, String ipdu){
 		cx.envoyer(ipdu);
 		String[] splited = ipdu.split("\\s+");
-		System.out.println("plit: " + splited[0] + " lel: " +ipdu);
+		System.out.println("split: " + splited[0] + " envoyé: " +ipdu);
 		this.setLastPduSent(splited[0]);
 	}
 	
@@ -123,7 +123,7 @@ public class Client {
 		ArrayList<String> repDecompose;
 		System.out.println("recu: " + recu);
 		repDecompose = this.getGPC().decomposer(recu);
-		System.out.println("rep: " + repDecompose.get(0));
+		System.out.println("reçu découpé: " + repDecompose.get(0));
 		System.out.println("last sent: " + this.getLastPduSent());
 		
 		if(this.getGPC().repCoherente(repDecompose, this.getLastPduSent()) == 1 ){
@@ -165,6 +165,10 @@ public class Client {
 						System.out.println("Impossible de lancer la partie (Clients non prêts / vous êtes seul)");
 						this.traiterDemandeJoueur(j1, cx);
 						break;
+					case PDU.LISTPLAYERS:
+						System.out.println("Impossible de recuperer la liste des joueurs (partie lancée?)");
+						this.traiterDemandeJoueur(j1, cx);
+						break;
 					case PDU.STOP_PARTY:
 						System.out.println("Demande d'arrêt rejeté");
 						this.traiterDemandeJoueur(j1, cx);
@@ -184,6 +188,7 @@ public class Client {
 				//Ce cas ne devrait jamais arriver
 				System.out.println("Le serveur est Fou! Ce client va être tué");
 				this.setClientTourneFalse();
+				this.demandeQuitterTout(cx);
 				cx.FermerConnexionServeur();
 			}
 		}
@@ -238,8 +243,16 @@ public class Client {
 		  case PDU.BEGIN_PARTY:
 			  System.out.println("La Partie commence, un joueur va être désigné pour commencer!!");
 			  //this.setLastPduSent("");
+			  this.demandePlayersList(cx);
 			  p1.setStatus(PDU.PARTYPLAYING);
-			  //roll dices
+			  this.demandePlayersList(cx);
+			  break;
+		  case PDU.PLAYERSIN:
+			  if ( !(p1.getStatus().equals(PDU.PARTYPLAYING))){
+				  p1.traiterListeJoueurs(rep, this.j1, this.gPc);
+			  }
+			  p1.afficherListeJoueurs();
+			  this.traiterDemandeJoueur(j1, cx);
 			  break;
 			  
 		  case PDU.PARTY_CANCELLED:
@@ -259,12 +272,13 @@ public class Client {
 	    if(!(p1.isPartyRunning())){
 			if(j.getLeader()){
 				
-				choix = p1.menuChoixLeaderAvantDemarrer();
+				choix = p1.menuChoixLeader(false,false);
 				switch(choix){
 				   case 1: 
 					   this.demandeDemarrer(cx);
 					   break;
-				   case 2: 
+				   case 2:
+					   this.demandePlayersList(cx);
 					   break;
 				   case 3:
 					   this.demandeAnnuler(cx);
@@ -277,8 +291,30 @@ public class Client {
 				}
 			}
 		}else{
-			//cas 1er a jouer
-			//cas leader
+			if(j.getLeader()){
+				choix = p1.menuChoixLeader(true,false);
+				switch(choix){
+				   case 1: 
+					   this.demandePlayersList(cx);
+					   break;
+				   case 2:
+					   this.demandeAnnuler(cx);
+					   break;
+				   case 3:
+					   break;
+				   case 4:
+					   break;
+				   case 5:
+					   break;
+				   default:
+					   //ça ne devrait jamais arriver, la fonction est bornée
+					   System.out.println("Erreur, saisie traitement leader");
+					   break;
+				}
+			}else{
+				
+			}
+				
 		}
 	}
 	
@@ -299,7 +335,7 @@ public class Client {
 		System.out.println("Voici les parties: ");
 		ArrayList<String> parser = new ArrayList<>();
 		for( String partie : s.subList(1, s.size()) ){
-			parser = this.gPc.parseListRooms(partie);
+			parser = this.gPc.parseLists(partie,":");
 			System.out.println("Tapper 1 pour rejoindre la partie: " + parser.get(0)
 			+ " avec status: " + parser.get(1) + " ("+parser.get(2)+")");
 		}
@@ -326,6 +362,25 @@ public class Client {
 		return choix;
 	}
 	
+	//lancer les dés
+	public void demandeRoll(ConnexionClient cx){
+		String ipdu = this.getGPC().rollDices();
+		this.envoyer(cx,ipdu);
+	}
+	
+	//sert a dire au serveur qu'on quitte
+	public void demandeQuitterTout(ConnexionClient cx){
+		String ipdu = this.getGPC().quitter();
+		this.envoyer(cx,ipdu);
+	}
+	
+	//sert a demander la liste des joueurs dans la partie
+	public void demandePlayersList(ConnexionClient cx){
+		String ipdu = this.getGPC().listPlayers();
+		this.envoyer(cx,ipdu);
+	}
+	
+	//sert a annuler la partie en cours
 	public void demandeAnnuler(ConnexionClient cx){
 		String ipdu = this.getGPC().stopParty();
 		this.envoyer(cx,ipdu);
@@ -388,6 +443,7 @@ public class Client {
 			default:
 				System.out.println("Fermeture Client Perudo!");
 				this.setClientTourneFalse();
+				this.demandeQuitterTout(cx);
 				cx.FermerConnexionServeur();
 				break;
 			}
@@ -408,6 +464,7 @@ public class Client {
 				t.start();
 				client.traiterMenuChoix(cx);
 				while( client.getClientTourne()); // maintient le client ouvert
+				System.out.println("y");
 			}catch(IOException e){
 				System.err.println("Erreur : " + e);
 				//e.printStackTrace();

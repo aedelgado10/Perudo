@@ -47,6 +47,10 @@ public class Joueur {
 		return this.valeursChoisies; 
 	}
 	
+	//Afficher couleur joueur
+	public Couleur getCouleur(){
+		return this.gobelet.getCouleur();
+	}
 	
 	//METHODES CALCUL POUR LA V3 DU CLIENT
 	/*
@@ -91,10 +95,7 @@ public class Joueur {
 		return (this.valeursChoisies.get(0) + "-" + this.valeursChoisies.get(1) + "  (Format : nombre de dés - valeur de dé Parié)" );
 	}
 	
-	//Afficher couleur joueur
-	public Couleur getCouleur(){
-		return this.gobelet.getCouleur();
-	}
+	
 	
 	//recuperer Dé
 	public void recupererDe(){

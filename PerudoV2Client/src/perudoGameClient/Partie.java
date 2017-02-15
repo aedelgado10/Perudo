@@ -91,23 +91,46 @@ public class Partie {
 		}
 	}
 	
-	//Menu pour le Leader
-	public void afficherMenuLeaderAvantDemarrer(){
-		System.out.println("Vous êtes les Leader, vous pouvez:");
-		System.out.println("Taper 1: Lancer Partie");
-		System.out.println("Taper 2: Voir Joueurs");
-		System.out.println("Taper 3: Annuler Partie");
+	//Menu pour le Leader avant demarrage
+	public void afficherMenuLeader(boolean estDemarre, boolean estPremier){
+		if(!estDemarre){
+			System.out.println("Vous êtes les Leader, la partie n'a pas demarré vous pouvez:");
+			System.out.println("Taper 1: Lancer Partie");
+			System.out.println("Taper 2: Voir Joueurs");
+			System.out.println("Taper 3: Annuler Partie");
+		}
+		else if(estPremier){
+			System.out.println("Vous êtes les Leader et le premier a jouer, la partie est en cours vous pouvez:");
+			System.out.println("Taper 1: Voir Joueurs");
+			System.out.println("Taper 2: Annuler Partie");
+			System.out.println("Taper 3: Surencherir");
+		}
+		else{
+			System.out.println("Vous êtes les Leader, la partie est en cours vous pouvez:");
+			System.out.println("Taper 1: Voir Joueurs");
+			System.out.println("Taper 2: Annuler Partie");
+			System.out.println("Taper 3: Surencherir");
+			System.out.println("Taper 4: Menteur");
+			System.out.println("Taper 5: Tout Pile");
+		}
 	}
 	
 	
-	public int menuChoixLeaderAvantDemarrer(){
+	public int menuChoixLeader(boolean estDemarre, boolean estPremier){
 		
 		Scanner scan = new Scanner(System.in);
-		int choix;
-		do{
-		  this.afficherMenuLeaderAvantDemarrer();
-		  choix = scan.nextInt();
-		}while(choix > 3 || choix < 1);	
+		int choix = 0;
+		if(!estDemarre || estPremier){
+			do{
+				this.afficherMenuLeader(estDemarre,estPremier);
+				choix = scan.nextInt();
+			}while(choix > 3 || choix < 1);
+		}else{
+			do{
+				this.afficherMenuLeader(estDemarre,estPremier);
+				choix = scan.nextInt();
+			}while(choix > 5 || choix < 1);
+		}
 		
 		return choix;
 	}
@@ -119,6 +142,50 @@ public class Partie {
 			this.listeJoueurs.add(j);
 	}
 	
+	//traite la liste des joueurs reçu et stocke la liste
+	public void traiterListeJoueurs(ArrayList<String> rep, Joueur j, GestionProtocoleClient gp){
+		//if(this.listeJoueurs.size() > 1){
+			ArrayList<String> mainParser = new ArrayList<>();
+			ArrayList<String> parser = new ArrayList<>();
+			Joueur j1;
+			Couleur c;
+			String pseudo;
+			
+			for( String infoJ : rep.subList(1, rep.size())){
+				//if(infoJ != ""){
+					mainParser = gp.parseLists(infoJ,";");
+				//}
+				
+			}
+			
+			for( String parsed : mainParser ){
+				//if(parsed != ""){
+					parser = gp.parseLists(parsed,":");
+					c = new Couleur(parser.get(2));
+					j1 = new Joueur(Integer.parseInt(parser.get(0)), c , false);
+					pseudo = parser.get(1);
+					j1.setNom(pseudo);
+					
+					if( j.getId() != j1.getId() ){
+						this.ajouterJoueur(j1);
+					}
+				//}
+			}
+		//}
+	}
+	
+	//afficher liste des joueurs
+	public void afficherListeJoueurs(){
+		System.out.println("Voilà la liste des Joueurs présents dans la partie: ");
+		for(Joueur j : this.listeJoueurs){
+			System.out.println(j.getPseudo() + " (" + j.getCouleur().getCodeCouleur() + ")" );
+		}
+		System.out.println("");
+	}
+	
+	public int nbrJoueursIn(){
+		return this.listeJoueurs.size();
+	}
 	
 	
 	//METHODES POUR LA V3 CLIENT

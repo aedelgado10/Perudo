@@ -24,7 +24,7 @@ public class ConnexionClient implements Runnable{
 	
 	//Crée une connexion avec le serveur
 	public void ConnecterServeur() throws IOException {
-		this.sock = new Socket("127.0.0.1", 27016);
+		this.sock = new Socket("172.16.64.89", 27016);
 	}
 	
 	//Ferme la connexion de façon propre
@@ -80,14 +80,14 @@ public class ConnexionClient implements Runnable{
 				ex.printStackTrace();
 			}
 		}
-		
 	}
 
 	@Override
 	public void run(){
-		while (this.getClient().getClientTourne()){
-			String recu = this.recevoir();
-			if(recu != null){
+		String recu = null;
+		while (this.getClient().getClientTourne()){ 
+			recu = this.recevoir();
+			if(recu != null ){
 				this.getClient().traiter(recu,this);
 			}
 			else{
@@ -95,6 +95,7 @@ public class ConnexionClient implements Runnable{
 			}
 		}
 	}
+	
 	
 	
 

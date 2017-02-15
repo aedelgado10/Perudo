@@ -28,6 +28,10 @@ public class GestionProtocoleClient extends PDU{
 		this.positiveAnswers.add(DICES);
 		this.positiveAnswers.add(PARTY_CANCELLED);
 		this.positiveAnswers.add(OKPARTY);
+		this.positiveAnswers.add(PLAYERSIN);
+		this.positiveAnswers.add(PLAY);
+		this.positiveAnswers.add(PLAY1ST);
+		
 	}
 	
 	//après utilisation repAttendue, cette methode sert a savoir
@@ -47,7 +51,8 @@ public class GestionProtocoleClient extends PDU{
 	//Teste si la reponse a la demande est coherente
 	public int repCoherente(ArrayList<String> rep, String ipdu){
 		
-		if(rep.get(0).equals(BEGIN_PARTY) || rep.get(0).equals(PARTY_CANCELLED) ){
+		if(rep.get(0).equals(BEGIN_PARTY) || rep.get(0).equals(PARTY_CANCELLED) 
+				|| rep.get(0).equals(PLAY) || rep.get(0).equals(PLAY1ST)){
 			return 1;
 		}
 		
@@ -124,9 +129,16 @@ public class GestionProtocoleClient extends PDU{
 					return 1;
 				}
 				break;
+			case PDU.LISTPLAYERS:
+				//reponse compatible
+				if(rep.get(0).equals(PDU.PLAYERSIN)){
+					return 1;
+				}
+				break;
 			case PDU.CREATE_PARTY:
 				//reponse compatible
-				if(rep.get(0).equals(PDU.OKPARTY) || rep.get(0).equals(PDU.REJPARTY)){
+				if(rep.get(0).equals(PDU.OKPARTY) || rep.get(0).equals(PDU.REJPARTY)
+						|| rep.get(0).equals(PDU.PARTYPLAYING) || rep.get(0).equals(PDU.FULL) ){
 					return 1;
 				}
 				break;
@@ -186,6 +198,14 @@ public class GestionProtocoleClient extends PDU{
 	
 	public String stopParty(){
 		return PDU.STOP_PARTY;
+	}
+	
+	public String listPlayers(){
+		return PDU.LISTPLAYERS;
+	}
+	
+	public String quitter(){
+		return PDU.QUIT;
 	}
 	
 }

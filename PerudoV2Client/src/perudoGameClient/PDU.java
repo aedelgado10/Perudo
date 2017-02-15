@@ -34,7 +34,8 @@ public class PDU {
 	
 	/* Quitter une partie (en cours ou non) */
 	public static final String LEAVE = "LEAVE_PARTY";				// Quitter la partie
-	public static final String OK_LEAVE = "OK_LEAVE";				// RECU !
+	public static final String OK_LEAVE = "OK_LEAVE";              // RECU !
+    public static final String QUIT = "QUIT";
 	
 	/* Lister les salles */
 	public static final String LISTROOMS = "LIST_ROOMS";				// Demander liste des salles
@@ -76,6 +77,12 @@ public class PDU {
 	public static final String GET_ID = "GET_ID"; 					// Récupérer ID	
 	public static final String ID = "ID";							// ID x
 	
+	public static final String LISTPLAYERS = "LISTPLAYERS";
+	public static final String PLAYERSIN = "PLAYERSIN";
+	
+	public static final String PLAY1ST = "PLAY1ST";
+	public static final String PLAY = "PLAY";
+	
 	/* Demande incomprise */
 	public static final String WHATSUP = "WHATSUP";					// Le serveur n'a pas compris
 	
@@ -93,10 +100,10 @@ public class PDU {
 		return requete;
 	}
 	
-	public ArrayList<String> parseListRooms(String liste){
+	public ArrayList<String> parseLists(String liste, String delimiter){
 		
 		ArrayList<String> roomInfo = new ArrayList<String>();
-		StringTokenizer s = new StringTokenizer(liste, ":");
+		StringTokenizer s = new StringTokenizer(liste, delimiter);
 		
 		while (s.hasMoreTokens()){
 			roomInfo.add(s.nextToken());
@@ -104,4 +111,5 @@ public class PDU {
 		
 		return roomInfo;
 	}
+	
 }

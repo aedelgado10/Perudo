@@ -41,11 +41,11 @@ public class Gobelet{
 	}
 	
 	public Couleur getCouleur(){
-		return color;
+		return this.color;
 	}
 
 	public ArrayList<DePerudo> getListeDe() {
-		return listeDe;
+		return this.listeDe;
 	}
 	
 	public void retirerDe(){
