@@ -13,11 +13,12 @@ public class GestionProtocoleClient extends PDU{
 	 * @return IMPORTANT : TOUS les returns de cette fonction servent a debugger
 	 */
 	public String traiter(String recu, Client c, ConnexionClient cx){
-		ArrayList<String> req_args = this.decomposer(recu);
-		String requete = req_args.get(0);
-		String partie = c.getPartie().getStatus();
+		ArrayList<String> req_args = this.decomposer(recu);  //separation PDU et Arguments
+		String requete = req_args.get(0);  //extraction PDU
+		String partie = c.getPartie().getStatus();  // Calcul du statut de la partie
 		int choix = 0;
 		
+		// Les evenements sont géres en fonction du statut de la partie
 		switch(partie){
 			case NOPARTIES:
 				switch(requete){

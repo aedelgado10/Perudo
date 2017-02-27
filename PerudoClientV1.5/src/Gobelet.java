@@ -23,13 +23,6 @@ public class Gobelet{
 		}
 	}
 	
-	/*public void secouer(){
-		for(DePerudo d : listeDe){
-			d.genererValeur();
-			d.setPerudo();
-		}
-	}*/
-	
 	public ArrayList<String> afficherDes(){
 		
 		ArrayList<String> des = new ArrayList<String>();
@@ -65,4 +58,13 @@ public class Gobelet{
 		if(i < 5)
 			listeDe.add(new DePerudo(this.color));
 	}
+	
+	
+	//v3
+	/*public void secouer(){
+	for(DePerudo d : listeDe){
+		d.genererValeur();
+		d.setPerudo();
+	}
+}*/
 }

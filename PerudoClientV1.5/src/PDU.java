@@ -96,6 +96,8 @@ public class PDU {
 	/* Demande mal-placée */
 	public static final String DEBUG_IT = "DEBUG_IT";				// Ca ne devrait pas arriver
 	
+	
+	//Separe PDU des Arguments
 	public ArrayList<String> decomposer(String cmd){
 		ArrayList<String> requete = new ArrayList<String>();
 		StringTokenizer s = new StringTokenizer(cmd);
@@ -107,6 +109,8 @@ public class PDU {
 		return requete;
 	}
 	
+	
+	/*Separe liste en fonction d'un delimiteur*/
 	public ArrayList<String> parseLists(String liste, String delimiter){
 		
 		ArrayList<String> roomInfo = new ArrayList<String>();

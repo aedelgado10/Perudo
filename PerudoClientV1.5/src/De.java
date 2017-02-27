@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * 
- * @author Pereira-Delgado
+ * @author Pereira, Delgado
  * @version 1
  *
  */
@@ -17,13 +17,6 @@ public class De {
 		this.color = c;
 	}
 	
-	/*public void genererValeur(){
-		
-		Random r = new Random();
-		this.derniereValeur = r.nextInt(6) + 1;
-		
-	}*/
-	
 	public void setDerniereValeur(int val){
 		this.derniereValeur = val;
 	}
@@ -35,4 +28,13 @@ public class De {
 	public Couleur getCouleur(){
 		return color;
 	}
+	
+	
+	//pour la v3
+	/*public void genererValeur(){
+	
+	Random r = new Random();
+	this.derniereValeur = r.nextInt(6) + 1;
+	
+}*/
 }

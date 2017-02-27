@@ -2,12 +2,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * @author Pereira
+ * @version 1
+ */
+
 public class Client {
 
 	private GestionProtocoleClient gPc;
 	private Partie p;
 	private Joueur j;
-	private Scanner scan;
+	private Scanner scan; // pour gérer inputs
 	
 	public Client() {
 		this.gPc = new GestionProtocoleClient();
@@ -39,7 +44,7 @@ public class Client {
 		cx.ConnecterServeur();
 	}
 	
-	//Envoie la demande, stocke celle ci
+	//Envoie la demande
 	public void envoyer(ConnexionClient cx, String ipdu){
 		cx.envoyer(ipdu);
 	}
@@ -50,28 +55,23 @@ public class Client {
 	
 	/* TRAITER Receptions*/
 	
+	/*Lien entre le thread de reception et le client*/
 	public String traiter(String recu, ConnexionClient cx){
-		System.out.println("[MainClient.Debugger] Recu: " + recu);
+		System.out.println("[MainClient.Debugger] Recu: " + recu);  //Debuger
 		String resultat = this.getGPC().traiter(recu, this, cx);
-		System.out.println("[MainClient.Debugger] resultat: " + resultat);
-		return resultat;
+		System.out.println("[MainClient.Debugger] resultat: " + resultat); // Debugger  
+		return resultat;         // debbuger
 	}
 	/***********************************************************************/
 	
 	/* REINITIALISER PARAMETRES CLIENT */
 	public void restartClient(){
-		/*this.getPartie().setStatus(PDU.NOPARTIES);
-		this.getPartie().setIdParty(0);
-		this.getPartie().setIsLeader(false);
-		this.getPartie().restartListe();	
-		this.getJoueur().setMyTurn(false);
-		this.getJoueur().setIdJoueur(0);
-		this.getJoueur().setNomJoueur("");*/
 		this.p = new Partie();
 		this.j = new Joueur();
 	}
 	
 	/* MENUS */
+	// Menu avant d'ouvrir socket
 	public void afficherMenuClientOuvert(){
 		System.out.println("Vous avez les choix suivants:");
 		System.out.println("Tapper 1: Connecter au serveur de jeu");
@@ -80,10 +80,11 @@ public class Client {
 		
 	}
 	
+	// Premier menu, apres ouverture de Socket
 	public void afficherMenuClientConnecte(){
 		System.out.println("Vous êtes maintenant connectés au serveur de jeu:");
 		System.out.println("Tapper 1: Creer Partie");
-		System.out.println("Tapper 2: Joindre Partie");
+		System.out.println("Tapper 2: Lister Parties");
 		System.out.println("Tapper 3: Quitter");
 		System.out.println("");
 	}
@@ -108,10 +109,12 @@ public class Client {
 		}
 	}
 	
+	// Affichage des Parties après selection de l'option 2 dans le menu
 	public void afficherPartiesDisponibles(ArrayList<String> s){
-		System.out.println("Voici les parties: ");
+		System.out.println("Liste de Parties: ");
 		ArrayList<String> parser = new ArrayList<>();
 		int i = 1 ;
+		//sublist 1 car le 0 est la PDU
 		for( String partie : s.subList(1, s.size()) ){
 			parser = this.gPc.parseLists(partie,":");
 			System.out.println("Tapper " + i +" pour rejoindre la Partie: " + parser.get(0)
@@ -121,6 +124,7 @@ public class Client {
 		System.out.println("Tapper " + s.size() + " pour ne pas rejoindre");
 	}
 	
+	//Methode qui sert a traiter tous les menus en fonction de l'input
 	public int choixMenuClient(int menu, int possibilites){
 		int choix;
 		scan = new Scanner(System.in);
@@ -155,6 +159,7 @@ public class Client {
 		return choix;
 	}
 	
+	// pour saisir le pseudo
 	public String choixTexte(){
 	    scan = new Scanner(System.in);
 		String pseudo = "";
@@ -163,6 +168,10 @@ public class Client {
 	}
 	/******************************************************************/
 	
+	
+	/**
+	 * Main du Code partie Client
+	 */
 	public static void main(String[] args) {
 		Client client = new Client();
 		ConnexionClient cx = new ConnexionClient(client);
@@ -177,13 +186,7 @@ public class Client {
 				client.connecterServeur(cx);
 				t.start();
 				client.traiterMenuBienvenue(cx);
-				/*while(cx.getSocket() != null){
-					if(cx.getSocket() == null){
-						System.out.println("*[Fermeture Client Perudo]!*");
-						System.out.println("****************************\n");
-					}
-					break;
-				}*/
+				/*while(cx.getSocket() != null);  client toujours Ouvert?*/
 			}catch(IOException e){
 				cx.FermerConnexionServeur();
 				System.err.println("Erreur : " + e);
