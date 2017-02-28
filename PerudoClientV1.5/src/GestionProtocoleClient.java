@@ -234,10 +234,8 @@ public class GestionProtocoleClient extends PDU{
 						c.envoyer(cx, this.who1st());
 						return "Liar success";
 					case LIAR_NOK:
-						if(c.getJoueur().getMyTurn()){
 							c.getPartie().traiterLiar(c, recu, false);
 							c.getJoueur().setMyTurn(false);
-						}
 						c.envoyer(cx, this.who1st());
 						return "Liar fail";
 					case PARTY_CANCELLED:

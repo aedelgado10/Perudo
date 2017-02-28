@@ -234,12 +234,12 @@ public class Partie {
 		   System.out.println("Vous avez le nombre maximal de dés");
 	   }
 	   
-	   if( !ttpile && c.getJoueur().getNbrDes() > 1){
+	   if( !ttpile && c.getJoueur().getNbrDes() > 0){
 		   System.out.println("Vous perdez un dé");
 		   c.getJoueur().enleverDe();
-	   }
-	   else if(c.getJoueur().getNbrDes() == 0){
-		   System.out.println("Vous êtes eliminé! (plus de dés)");
+		   if(c.getJoueur().getNbrDes() == 0){
+			   System.out.println("Vous êtes eliminé! (plus de dés)");
+		   }
 	   }
 	}
 	
@@ -259,20 +259,35 @@ public class Partie {
 			   System.out.println("");
 		   }
 		   
-		   /*if( liar && c.getJoueur().getNbrDes() < 5){
-			   System.out.println("Vous recuperez un dé");
-			   c.getJoueur().recupererDe();
+		   if(liar && c.getJoueur().getMyTurn()){
+			   System.out.println("Vous aviez raison!");
 		   }
 		   else if(liar){
-			   System.out.println("Vous avez le nombre maximal de dés");
-		   }*/
-		   
-		   if( !liar && c.getJoueur().getNbrDes() > 1){
-			   System.out.println("Vous perdez un dé");
-			   c.getJoueur().enleverDe();
+			   System.out.println("Menteur dévoilé");
+			   if(c.getPartie().dernierJoue.equals(c.getJoueur())){
+				   if(c.getJoueur().getNbrDes() > 0){
+					   System.out.println("Vous perdez un dé");
+					   c.getJoueur().enleverDe();
+					   if(c.getJoueur().getNbrDes() == 0){
+						   System.out.println("Vous êtes eliminé! (plus de dés)");
+					   }
+				   }
+			   }
 		   }
-		   else if(c.getJoueur().getNbrDes() == 0){
-			   System.out.println("Vous êtes eliminé! (plus de dés)");
+		  
+		   
+		   
+		   if( !liar && c.getJoueur().getMyTurn()){
+			   System.out.println("Vous aviez tort");
+			   if( c.getJoueur().getNbrDes() > 0){
+				   c.getJoueur().enleverDe();
+				   if(c.getJoueur().getNbrDes() == 0){
+					   System.out.println("Vous êtes eliminé! (plus de dés)");
+				   }
+			   }
+		   }
+		   else if(!liar){
+			   System.out.println("Il n'y a pas de menteur!");
 		   }
 		}
 	/**********************************************************************/
