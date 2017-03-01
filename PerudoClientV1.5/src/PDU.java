@@ -36,9 +36,9 @@ public class PDU {
 	
 	/* Quitter une partie (en cours ou non) */
 	public static final String LEAVE = "LEAVE_PARTY";				// Quitter la partie
-	public static final String OK_LEAVE = "OK_LEAVE";              // RECU !
-    public static final String QUIT = "QUIT";                      //tout quitter
-    public static final String RAGEQUIT = "RQUIT";                   // quand on ferme de façon brutale
+	public static final String OK_LEAVE = "OK_LEAVE";               // RECU !
+    public static final String QUIT = "QUIT";                       //tout quitter
+    public static final String RAGEQUIT = "RQUIT";                  // quand on ferme de façon brutale
 	
 	/* Lister les salles */
 	public static final String LISTROOMS = "LIST_ROOMS";				// Demander liste des salles
@@ -71,7 +71,7 @@ public class PDU {
 	public static final String PLUS = "PLUS";						// Surencherir
 	public static final String APLUS = "APLUS";						// Annoncer quel jouer surenchère et de combien 
 	public static final String FANNOUNCE = "FANNOUNCE";             // Premiere annonce
-	//public static final String SHOUT = "SHOUT";                     // Annonce du serveur (joueur + val + nbdes)
+	//public static final String SHOUT = "SHOUT";                   // Annonce du serveur (joueur + val + nbdes)
 	
 	/* Créer un pseudo */
 	public static final String PSEUDOP = "PSEUDO";					// Etablir pseudo
@@ -85,10 +85,10 @@ public class PDU {
 	public static final String LISTPLAYERS = "LISTPLAYERS";         // lister les joueurs
 	public static final String PLAYERSIN = "PLAYERSIN";             // affichage
 	
-	public static final String PLAY1ST = "PLAY1ST";                  //
-	public static final String PLAY = "PLAY";
-	public static final String WHO1 = "1ST?";
-	public static final String WHO = "WHOPLAY";
+	public static final String PLAY1ST = "PLAY1ST";                 // indique qui es le premier a jouer
+	public static final String PLAY = "PLAY";                       // indique qui sont les suivants
+	public static final String WHO1 = "1ST?";                       // demande qui commence
+	public static final String WHO = "WHOPLAY";                     // demande le tour
 	
 	/* Demande incomprise */
 	public static final String WHATSUP = "WHATSUP";					// Le serveur n'a pas compris
@@ -97,7 +97,11 @@ public class PDU {
 	public static final String DEBUG_IT = "DEBUG_IT";				// Ca ne devrait pas arriver
 	
 	
-	//Separe PDU des Arguments
+	/**
+	 * 
+	 * @param cmd reception du serveur
+	 * @return un ArrayList avec 2 cases. PDU + Arguments s'il y en a
+	 */
 	public ArrayList<String> decomposer(String cmd){
 		ArrayList<String> requete = new ArrayList<String>();
 		StringTokenizer s = new StringTokenizer(cmd);
@@ -109,8 +113,6 @@ public class PDU {
 		return requete;
 	}
 	
-	
-	/*Separe liste en fonction d'un delimiteur*/
 	public ArrayList<String> parseLists(String liste, String delimiter){
 		
 		ArrayList<String> roomInfo = new ArrayList<String>();

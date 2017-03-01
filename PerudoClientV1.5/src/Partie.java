@@ -88,7 +88,7 @@ public class Partie {
 	
 	/* MENUS DANS PARTIE */
 	public void afficherMenuLeaderNonDemarre(){
-		System.out.println("Vous êtes le leader, la partie n'a pas commencé:");
+		System.out.println("Vous êtes le Leader, la partie N'a PAS commencé:");
 		System.out.println("Tapper 1: Lancer Partie");
 		System.out.println("Tapper 2: Voir Liste Joueurs");
 		System.out.println("Tapper 3: Annuler Partie");
@@ -96,7 +96,7 @@ public class Partie {
 	}
 	
 	public void afficherMenuLeaderDemarre(){
-		System.out.println("Vous êtes le leader, à votre tour:");
+		System.out.println("Vous êtes le Leader, à vous de jouer:");
 		System.out.println("Tapper 1: Surencherir");
 		System.out.println("Tapper 2: Menteur");
 		System.out.println("Tapper 3: Tout Pile");
@@ -107,7 +107,7 @@ public class Partie {
 	}
 	
 	public void afficherMenuLeaderPremier(){
-		System.out.println("Vous êtes le leader et le premier à jouer:");
+		System.out.println("Vous êtes le Leader et le premier à jouer:");
 		System.out.println("Tapper 1: Surencherir");
 		System.out.println("Tapper 2: Voir Dés");
 		System.out.println("Tapper 3: Voir Joueurs");
@@ -116,7 +116,7 @@ public class Partie {
 	}
 	
 	public void afficherMenuJoueurPremier(){
-		System.out.println("Vous êtes le premier, C'est votre tour:");
+		System.out.println("Vous êtes le premier, à vous de jouer:");
 		System.out.println("Tapper 1: Surencherir");
 		System.out.println("Tapper 2: Voir Dés");
 		System.out.println("Tapper 3: Voir Joueurs");
@@ -125,7 +125,7 @@ public class Partie {
 	}
 	
 	public void afficherMenuJoueurJeu(){
-		System.out.println("C'est votre tour:");
+		System.out.println("À vous de jouer:");
 		System.out.println("Tapper 1: Surencherir");
 		System.out.println("Tapper 2: Menteur");
 		System.out.println("Tapper 3: Tout Pile");

@@ -28,7 +28,7 @@ public class ConnexionClient implements Runnable{
 	
 	//Crée une connexion avec le serveur
 	public void ConnecterServeur() throws IOException {
-		this.sock = new Socket("78.243.241.68", 27016);
+		this.sock = new Socket("172.16.48.92", 27016);
 	}
 	
 	//Ferme la connexion de façon propre

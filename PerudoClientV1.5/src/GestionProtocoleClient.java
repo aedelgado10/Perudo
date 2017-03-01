@@ -18,6 +18,12 @@ public class GestionProtocoleClient extends PDU{
 		String partie = c.getPartie().getStatus();  // Calcul du statut de la partie
 		int choix = 0;
 		
+		// Le serveur ne reconnait pas la PDU envoyé
+		if(requete.equals(WHATSUP)){
+			System.out.println("Erreur:\n" + req_args.get(1));
+			cx.FermerConnexionServeur();
+			return recu;
+		}
 		// Les evenements sont géres en fonction du statut de la partie
 		switch(partie){
 			case NOPARTIES:
@@ -152,29 +158,33 @@ public class GestionProtocoleClient extends PDU{
 							if(c.getJoueur().getMyTurn()){
 								c.getPartie().traiterListeJoueurs(req_args, c);
 								c.getPartie().afficherListeJoueurs();
+								System.out.println(c.getJoueur().getCodeCouleurJoueur() + ": À vous de jouer");
+								this.traiterMenuJoueurDemarre(c, cx);
 								return "Liste des joueurs quand a mon tour";
 							}
 							else{
-								return "Probleme players in";
+								c.getPartie().traiterListeJoueurs(req_args, c);
+								return "Mise a jour: liste joueurs";
 							}
 						}
 					case PLAY1ST:
 						c.getPartie().setIsBeginning(true);
 						if(req_args.get(1).equals(c.getJoueur().getCodeCouleurJoueur())){
 							c.getJoueur().setMyTurn(true);
-							System.out.println("Vous êtes le premier à jouer");
+							System.out.println(c.getJoueur().getCodeCouleurJoueur() + " : Vous êtes le premier à jouer");
 							c.envoyer(cx, this.rollDices());
 							return "Vous êtes le premier a jouer";
 						}
 						else{
 							c.getJoueur().setMyTurn(false);
-							System.out.println("Vous n'êtes pas le premier à jouer");
+							System.out.println(req_args.get(1) + ": Est le premier a jouer!");
 							c.envoyer(cx, this.rollDices());
 							return "Vous n'êtes pas la premier a jouer";
 						}
 					case PLAY: 
 						if(req_args.get(1).equals(c.getJoueur().getCodeCouleurJoueur())){
 							c.getJoueur().setMyTurn(true);
+							System.out.println(req_args.get(1) + ": À vous de jouer!");
 							if(c.getPartie().getIsLeader()){
 								this.traiterMenuLeaderDemarre(c, cx);
 								return "Tour du leader";
@@ -202,7 +212,7 @@ public class GestionProtocoleClient extends PDU{
 							}
 						}
 						else{
-							System.out.println("Voici vos dés p:\n" + c.getJoueur().voirDes());
+							System.out.println("Voici vos dés :\n" + c.getJoueur().voirDes());
 							System.out.println("En attente du premier joueur");
 							return "Dés Joueur en Attente";
 						}
@@ -219,6 +229,9 @@ public class GestionProtocoleClient extends PDU{
 							c.getPartie().traiterToutPile(c, recu, true);
 							c.getJoueur().setMyTurn(false);
 						}
+						else{
+							System.out.println("Tout Pile!");
+						}
 						c.envoyer(cx, this.who1st());
 						return "Tout pile success";
 					case TTPILE_NOK:
@@ -226,16 +239,19 @@ public class GestionProtocoleClient extends PDU{
 							c.getPartie().traiterToutPile(c, recu, false);
 							c.getJoueur().setMyTurn(false);
 						}
+						else{
+							System.out.println("Ce n'est pas Tout Pile!");
+						}
 						c.envoyer(cx, this.who1st());
 						return "Tout Pile fail";
 					case LIAR_OK:
-							c.getPartie().traiterLiar(c, recu, true);
-							c.getJoueur().setMyTurn(false);
+						c.getPartie().traiterLiar(c, recu, true);
+						c.getJoueur().setMyTurn(false);
 						c.envoyer(cx, this.who1st());
 						return "Liar success";
 					case LIAR_NOK:
-							c.getPartie().traiterLiar(c, recu, false);
-							c.getJoueur().setMyTurn(false);
+						c.getPartie().traiterLiar(c, recu, false);
+						c.getJoueur().setMyTurn(false);
 						c.envoyer(cx, this.who1st());
 						return "Liar fail";
 					case PARTY_CANCELLED:
@@ -271,7 +287,6 @@ public class GestionProtocoleClient extends PDU{
 				break;
 			case 3:
 				c.envoyer(cx, this.stopParty());
-				c.traiterMenuBienvenue(cx);
 				break;
 			default:
 				System.out.println("Erreur Saisie Menu Leader non demarré");

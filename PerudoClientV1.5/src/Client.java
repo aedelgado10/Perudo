@@ -57,7 +57,7 @@ public class Client {
 	
 	/*Lien entre le thread de reception et le client*/
 	public String traiter(String recu, ConnexionClient cx){
-		System.out.println("[MainClient.Debugger] Recu: " + recu);  //Debuger
+		System.out.println("MainClient.Debugger] Recu: " + recu);  //Debuger
 		String resultat = this.getGPC().traiter(recu, this, cx);
 		System.out.println("[MainClient.Debugger] resultat: " + resultat); // Debugger  
 		return resultat;         // debbuger
@@ -178,7 +178,7 @@ public class Client {
 		Thread t = new Thread(cx);
 		
 		System.out.println("****************************");
-		System.out.println("*[Client Perudo Initialisé]*");
+		System.out.println("* Client Perudo Initialisé *");
 		System.out.println("****************************\n");
 		int choix = client.choixMenuClient(1,2);
 		if(choix == 1){
@@ -195,7 +195,7 @@ public class Client {
 		}
 		else{
 			System.out.println("****************************");
-			System.out.println("*Fermeture Client Perudo!  *");
+			System.out.println("* Fermeture Client Perudo! *");
 			System.out.println("****************************\n");
 			System.out.println("****************************");
 			System.out.println("*Provided by:              *\n* Andrés E. DELGADO ANDRADE* \n* Nady KERAGHEL            * \n* William PEREIRA DO CARMO *");
