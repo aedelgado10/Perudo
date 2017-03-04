@@ -57,7 +57,7 @@ public class Client {
 	
 	/*Lien entre le thread de reception et le client*/
 	public String traiter(String recu, ConnexionClient cx){
-		System.out.println("MainClient.Debugger] Recu: " + recu);  //Debuger
+		System.out.println("[MainClient.Debugger] Recu: " + recu);  //Debuger
 		String resultat = this.getGPC().traiter(recu, this, cx);
 		System.out.println("[MainClient.Debugger] resultat: " + resultat); // Debugger  
 		return resultat;         // debbuger
@@ -121,7 +121,7 @@ public class Client {
 			+ " avec status: " + parser.get(1) + " ("+parser.get(2)+")");
 			i++;
 		}
-		System.out.println("Tapper " + s.size() + " pour ne pas rejoindre");
+		System.out.println("Tapper " + s.size() + " pour ne pas rejoindre\n");
 	}
 	
 	//Methode qui sert a traiter tous les menus en fonction de l'input

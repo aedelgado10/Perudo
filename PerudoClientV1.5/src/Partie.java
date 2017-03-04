@@ -227,18 +227,18 @@ public class Partie {
 	   }
 	   
 	   if( ttpile && c.getJoueur().getNbrDes() < 5){
-		   System.out.println("Vous recuperez un dé");
+		   System.out.println("Vous recuperez un dé\n");
 		   c.getJoueur().recupererDe();
 	   }
 	   else if(ttpile){
-		   System.out.println("Vous avez le nombre maximal de dés");
+		   System.out.println("Vous avez le nombre maximal de dés\n");
 	   }
 	   
 	   if( !ttpile && c.getJoueur().getNbrDes() > 0){
 		   System.out.println("Vous perdez un dé");
 		   c.getJoueur().enleverDe();
 		   if(c.getJoueur().getNbrDes() == 0){
-			   System.out.println("Vous êtes eliminé! (plus de dés)");
+			   System.out.println("Vous êtes eliminé! (plus de dés)\n");
 		   }
 	   }
 	}
@@ -260,16 +260,16 @@ public class Partie {
 		   }
 		   
 		   if(liar && c.getJoueur().getMyTurn()){
-			   System.out.println("Vous aviez raison!");
+			   System.out.println("Vous aviez raison!\n");
 		   }
 		   else if(liar){
-			   System.out.println("Menteur dévoilé");
+			   System.out.println("Menteur dévoilé\n");
 			   if(c.getPartie().dernierJoue.equals(c.getJoueur())){
 				   if(c.getJoueur().getNbrDes() > 0){
-					   System.out.println("Vous perdez un dé");
+					   System.out.println("Vous perdez un dé\n");
 					   c.getJoueur().enleverDe();
 					   if(c.getJoueur().getNbrDes() == 0){
-						   System.out.println("Vous êtes eliminé! (plus de dés)");
+						   System.out.println("Vous êtes eliminé! (plus de dés)\n");
 					   }
 				   }
 			   }

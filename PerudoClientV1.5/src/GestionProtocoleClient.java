@@ -18,12 +18,12 @@ public class GestionProtocoleClient extends PDU{
 		String partie = c.getPartie().getStatus();  // Calcul du statut de la partie
 		int choix = 0;
 		
-		// Le serveur ne reconnait pas la PDU envoyé
-		if(requete.equals(WHATSUP)){
-			System.out.println("Erreur:\n" + req_args.get(1));
-			cx.FermerConnexionServeur();
-			return recu;
+		if(requete.equals(OK_LEAVE)){
+			System.out.println("Vous avez quitté la partie");
+			c.traiterMenuBienvenue(cx);
+			return "Leaving Party";
 		}
+		
 		// Les evenements sont géres en fonction du statut de la partie
 		switch(partie){
 			case NOPARTIES:
@@ -55,6 +55,10 @@ public class GestionProtocoleClient extends PDU{
 						System.out.println("Pas de Parties Disponibles.");
 						c.traiterMenuBienvenue(cx);
 						return "Pas de Parties en Cours";
+					case WHATSUP:
+						System.out.println("Erreur, message: " + recu);
+						c.traiterMenuBienvenue(cx);
+						return "Erreur serveur n'a pas compris: " + recu;
 					default:
 						return recu + "\nErreur: Pas de parties initialisées";
 				}
@@ -71,6 +75,11 @@ public class GestionProtocoleClient extends PDU{
 						System.out.println("Demande de Joindre Partie Rejeté");
 						c.traiterMenuBienvenue(cx);
 						return "Joindre partie rejeté";
+					case WHATSUP:
+						System.out.println("Erreur, message: " + recu);
+						c.restartClient();
+						c.traiterMenuBienvenue(cx);
+						return "Erreur serveur n'a pas compris: " + recu;
 					default:
 						return recu + "\nErreur: Problème avec l'essai de joindre une partie";
 				}
@@ -90,7 +99,7 @@ public class GestionProtocoleClient extends PDU{
 						return "Couleur Trouvé";
 					case PSEUDO_OK:
 						c.getJoueur().setMyTurn(false);
-						System.out.println("Bienvenue dans la partie (" + c.getJoueur().getCodeCouleurJoueur()+ ") " + c.getJoueur().getNomJoueur());
+						System.out.println("\nBienvenue dans la partie (" + c.getJoueur().getCodeCouleurJoueur()+ ") " + c.getJoueur().getNomJoueur());
 						c.getPartie().setStatus(WAITING);
 						c.getPartie().ajouterJoueur(c.getJoueur());
 						if(c.getPartie().getIsLeader()){
@@ -104,9 +113,13 @@ public class GestionProtocoleClient extends PDU{
 					case PSEUDO_KO:
 						System.out.println("Erreur lors de la saisie du pseudo...");
 						c.restartClient();
-						c.traiterMenuBienvenue(cx);
 						c.envoyer(cx, this.leaveParty());
 						return "Probleme de creation de Pseudo: " + this.leaveParty();
+					case WHATSUP:
+						System.out.println("Erreur, message: " + recu);
+						c.restartClient();
+						c.envoyer(cx, this.leaveParty());
+						return "Erreur serveur n'a pas compris: " + recu;
 					default:
 						return recu + "\nErreur pendant la preparation pour joindre partie";
 						
@@ -142,6 +155,13 @@ public class GestionProtocoleClient extends PDU{
 						c.restartClient();
 						c.traiterMenuBienvenue(cx);
 						return "Ragequit du leader avant demarrage";
+					case WHATSUP:
+						System.out.println("Erreur, message: " + recu);
+						if(c.getPartie().getIsLeader()){
+							this.traiterMenuLeaderNonDemarre(c, cx);
+						}
+						return "Erreur serveur n'a pas compris: " + recu;
+					
 					default:
 						return recu + "\nErreur pendant l'attente de lancement";
 				}
@@ -182,6 +202,7 @@ public class GestionProtocoleClient extends PDU{
 							return "Vous n'êtes pas la premier a jouer";
 						}
 					case PLAY: 
+						c.getPartie().setIsBeginning(false);
 						if(req_args.get(1).equals(c.getJoueur().getCodeCouleurJoueur())){
 							c.getJoueur().setMyTurn(true);
 							System.out.println(req_args.get(1) + ": À vous de jouer!");
@@ -264,6 +285,26 @@ public class GestionProtocoleClient extends PDU{
 						c.restartClient();
 						c.traiterMenuBienvenue(cx);
 						return "Ragequit du leader apres demarrage";
+					case WHATSUP:
+						System.out.println("Erreur, message: " + recu);
+						if(c.getJoueur().getMyTurn()){
+							if(c.getPartie().getIsLeader()){
+								if(c.getPartie().getIsBeginning()){
+									this.traiterMenuLeaderPremier(c, cx);
+								}
+								else{
+									this.traiterMenuLeaderDemarre(c, cx);
+								}
+							}else{
+								if(c.getPartie().getIsBeginning()){
+									this.traiterMenuJoueurPremier(c, cx);
+								}
+								else{
+									this.traiterMenuJoueurDemarre(c, cx);
+								}
+							}
+						}
+						return "Erreur serveur n'a pas compris: " + recu;
 					default:
 						return recu + "\nErreur: Problème traitement de partie en cours";
 				}
@@ -319,7 +360,7 @@ public class GestionProtocoleClient extends PDU{
 	}
 	
 	public void traiterMenuJoueurPremier(Client c, ConnexionClient cx){
-		int choix = c.choixMenuClient(7,3); // 7: menu joueur 1er a jouer, 3: nombre choix max
+		int choix = c.choixMenuClient(7,4); // 7: menu joueur 1er a jouer, 3: nombre choix max
 		switch(choix){
 			case 1:
 				c.getPartie().setIsBeginning(false);

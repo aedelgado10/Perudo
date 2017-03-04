@@ -144,23 +144,24 @@ public class Joueur {
 		ArrayList<Integer> vals = new ArrayList<>();
 		System.out.println("DE: " + de + " NBR: " + nbr);
 		int choix;
+		int choix2;
 		scan = new Scanner(System.in);
 		do{
-		  System.out.println("Surencherir les dernières valeurs jouees: "+ nbr + "-" + de);
-		  System.out.println("Choisir dé a annoncer:");
-		  choix = scan.nextInt();
-		}while(choix > 6 || choix < de);
-		
-		vals.add(choix);
-		
-		
-		do{
-		  System.out.println("Surencherir les dernières valeurs jouees: "+ nbr + "-" + de);
-		  System.out.println("Choisir nombre de dés:");
-		  choix = scan.nextInt();
-		}while(choix <= nbr);
-		vals.add(choix);
-		
+			System.out.println("Surencherir les dernières valeurs jouees: "+ nbr + "-" + de);
+			do{
+			  System.out.println("Choisir dé a annoncer:");
+			  choix = scan.nextInt();
+			}while(choix > 6 || choix < 2);
+			
+			vals.add(choix);
+			
+			
+			do{
+			  System.out.println("Choisir nombre de dés:");
+			  choix2 = scan.nextInt();
+			}while(choix2 < 1);
+			vals.add(choix2);
+		}while((choix < de && choix2 < nbr) || (choix < de && choix2 == nbr) || (choix == de && choix2 < nbr));
 		return vals;
 	}
 	/**********************************************************************/
