@@ -82,15 +82,21 @@ public class PDU {
 	public static final String GET_ID = "GET_ID"; 					// Récupérer ID	
 	public static final String ID = "ID";							// ID x
 	
+	/*LISTE PLAYERS*/
 	public static final String LISTPLAYERS = "LISTPLAYERS";         // lister les joueurs
 	public static final String PLAYERSIN = "PLAYERSIN";             // affichage
 	
+	/*À QUI DE JOUER*/
 	public static final String PLAY1ST = "PLAY1ST";                 // indique qui es le premier a jouer
 	public static final String PLAY = "PLAY";                       // indique qui sont les suivants
 	public static final String WHO1 = "1ST?";                       // demande qui commence
 	public static final String WHO = "WHOPLAY";                     // demande le tour
 	
-	/* Demande incomprise */
+	/*VAINQUEUR / VAINCU*/
+	public static final String LOSER = "LOSER";                     // Joueur eliminé
+ 	public static final String WINNER = "WINNER";                   // Joueur Gagnant
+	
+	/* Demande incomprise par le serveur*/
 	public static final String WHATSUP = "WHATSUP";					// Le serveur n'a pas compris
 	
 	/* Demande mal-placée */
@@ -98,7 +104,7 @@ public class PDU {
 	
 	
 	/**
-	 * 
+	 * Découpe la reponse du serveur
 	 * @param cmd reception du serveur
 	 * @return un ArrayList avec 2 cases. PDU + Arguments s'il y en a
 	 */
@@ -113,6 +119,7 @@ public class PDU {
 		return requete;
 	}
 	
+	/*Découpe la réponse du serveur en fonction d'un délimiteur*/
 	public ArrayList<String> parseLists(String liste, String delimiter){
 		
 		ArrayList<String> roomInfo = new ArrayList<String>();

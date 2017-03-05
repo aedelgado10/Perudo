@@ -57,9 +57,9 @@ public class Client {
 	
 	/*Lien entre le thread de reception et le client*/
 	public String traiter(String recu, ConnexionClient cx){
-		System.out.println("[MainClient.Debugger] Recu: " + recu);  //Debuger
+		//System.out.println("[MainClient.Debugger] Recu: " + recu);  //Debuger
 		String resultat = this.getGPC().traiter(recu, this, cx);
-		System.out.println("[MainClient.Debugger] resultat: " + resultat); // Debugger  
+		//System.out.println("[MainClient.Debugger] resultat: " + resultat); // Debugger  
 		return resultat;         // debbuger
 	}
 	/***********************************************************************/
@@ -89,6 +89,7 @@ public class Client {
 		System.out.println("");
 	}
 	
+	// Menu Principal après connexion au serveur
 	public void traiterMenuBienvenue(ConnexionClient cx){
 		int choix;
 		choix = this.choixMenuClient(2,3);
@@ -101,9 +102,6 @@ public class Client {
 			break;
 		default:
 			this.envoyer(cx, this.getGPC().quitter());
-			System.out.println("****************************");
-			System.out.println("*[Fermeture Client Perudo!]*");
-			System.out.println("****************************\n");
 			cx.FermerConnexionServeur();
 			break;
 		}
@@ -124,7 +122,13 @@ public class Client {
 		System.out.println("Tapper " + s.size() + " pour ne pas rejoindre\n");
 	}
 	
-	//Methode qui sert a traiter tous les menus en fonction de l'input
+	
+	/**
+	 * Methode qui sert a traiter tous les menus
+	 * @param menu : c'est le chix du menu qu'il faut afficher
+	 * @param possibilites : nombre de choix maximal pour le menu choisit
+	 * @return le resultat du choix du client en fonction du menu choisi
+	 */
 	public int choixMenuClient(int menu, int possibilites){
 		int choix;
 		scan = new Scanner(System.in);
@@ -154,7 +158,12 @@ public class Client {
 		   default:
 			  break;
 		  }
-		  choix = scan.nextInt();
+		  try{
+			  choix = scan.nextInt();
+		  }catch(Exception e){
+			  System.out.println("\nErreur de saisie menu!");
+			  return 99;
+		  }
 		}while(choix > possibilites || choix < 1);	
 		return choix;
 	}
@@ -165,6 +174,19 @@ public class Client {
 		String pseudo = "";
 		pseudo = scan.next();
 		return pseudo;
+	}
+	/******************************************************************/
+	
+	
+	/* CREDITS */
+	public void afficherCredits(){
+		System.out.println("********************************************");
+		System.out.println("*         Fermeture Client Perudo!         *");
+		System.out.println("********************************************");
+		System.out.println("********************************************");
+		System.out.println("*Provided by:                              *\n* Andrés E. DELGADO ANDRADE (Sud-Américain)* \n* Nady KERAGHEL (Africain)                 * \n* William PEREIRA DO CARMO (Européen)      *");
+		System.out.println("*                                          *\n* M1 STRI 2017©    -Le monde est connecté- *");
+		System.out.println("********************************************\n");
 	}
 	/******************************************************************/
 	
@@ -188,19 +210,14 @@ public class Client {
 				client.traiterMenuBienvenue(cx);
 				/*while(cx.getSocket() != null);  client toujours Ouvert?*/
 			}catch(IOException e){
-				cx.FermerConnexionServeur();
-				System.err.println("Erreur : " + e);
+				//cx.FermerConnexionServeur();
 				//e.printStackTrace();
+				System.out.println("Erreur: " + e);
+				client.afficherCredits();
 			}
 		}
 		else{
-			System.out.println("****************************");
-			System.out.println("* Fermeture Client Perudo! *");
-			System.out.println("****************************\n");
-			System.out.println("****************************");
-			System.out.println("*Provided by:              *\n* Andrés E. DELGADO ANDRADE* \n* Nady KERAGHEL            * \n* William PEREIRA DO CARMO *");
-			System.out.println("*                          *\n* M1 STRI 2017©            *");
-			System.out.println("****************************\n");
+			client.afficherCredits();
 		}
 	}
 

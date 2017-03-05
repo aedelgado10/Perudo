@@ -67,13 +67,12 @@ public class Joueur {
 	
 	/* VOIR DES */
 	public String voirDes(){
-		int i=1;
 		String des = new String();
-		des = "";
+		des = "| ";
 		for(String s : this.gobelet.afficherDes()){
-			des = des + "Dé " + i + ": " + s + "\n";
-			i++;
+			des = des + s + " | ";
 		}
+		des = des + "\n";
 		return des;
 	}
 	
@@ -108,6 +107,7 @@ public class Joueur {
 		this.getGobelet().setListeDe(listeDes);
 	}
 	
+	
 	public void enleverDe(){
 		this.getGobelet().retirerDe();
 	}
@@ -118,7 +118,7 @@ public class Joueur {
 	
 	/********************************************************************/
 	
-	/*choix des valeurs a annoncer*/
+	/*Choix des valeurs à annoncer*/
 	public ArrayList<Integer> choisirValeursPremier(){
 		ArrayList<Integer> vals = new ArrayList<>();
 		
@@ -126,14 +126,27 @@ public class Joueur {
 		scan = new Scanner(System.in);
 		do{
 		  System.out.println("Choisir dé a annoncer:");
-		  choix = scan.nextInt();
+		  try{
+			  choix = scan.nextInt();
+		  }catch(Exception e){
+			  vals = new ArrayList<>();
+			  vals.add(99);
+			  vals.add(99);
+			  return vals;
+		  }
 		}while(choix > 6 || choix < 2);
-		
 		vals.add(choix);
 		
 		do{
 		  System.out.println("Choisir nombre de dés:");
-		  choix = scan.nextInt();
+		  try{
+			  choix = scan.nextInt();
+		  }catch(Exception e){
+			  vals = new ArrayList<>();
+			  vals.add(99);
+			  vals.add(99);
+			  return vals;
+		  }
 		}while(choix < 1);
 		vals.add(choix);
 		
@@ -150,7 +163,14 @@ public class Joueur {
 			System.out.println("Surencherir les dernières valeurs jouees: "+ nbr + "-" + de);
 			do{
 			  System.out.println("Choisir dé a annoncer:");
-			  choix = scan.nextInt();
+			  try{
+				  choix = scan.nextInt();
+			  }catch(Exception e){
+				  vals = new ArrayList<>();
+				  vals.add(99);
+				  vals.add(99);
+				  return vals;
+			  }
 			}while(choix > 6 || choix < 2);
 			
 			vals.add(choix);
@@ -158,7 +178,14 @@ public class Joueur {
 			
 			do{
 			  System.out.println("Choisir nombre de dés:");
-			  choix2 = scan.nextInt();
+			  try{
+				  choix2 = scan.nextInt();
+			  }catch(Exception e){
+				  vals = new ArrayList<>();
+				  vals.add(99);
+				  vals.add(99);
+				  return vals;
+			  }
 			}while(choix2 < 1);
 			vals.add(choix2);
 		}while((choix < de && choix2 < nbr) || (choix < de && choix2 == nbr) || (choix == de && choix2 < nbr));

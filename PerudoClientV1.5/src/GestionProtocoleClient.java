@@ -10,7 +10,8 @@ public class GestionProtocoleClient extends PDU{
 	 * @param recu  String issu de la fonction recevoir
 	 * @param c     Classe Client 
 	 * @param cx    Classe ConnextionClient
-	 * @return IMPORTANT : TOUS les returns de cette fonction servent a debugger
+	 * @return IMPORTANT : TOUS les returns de cette fonction servent a debugger, penser enlever les
+	 * 					   commentaires des println de Client.traiter() 
 	 */
 	public String traiter(String recu, Client c, ConnexionClient cx){
 		ArrayList<String> req_args = this.decomposer(recu);  //separation PDU et Arguments
@@ -147,7 +148,7 @@ public class GestionProtocoleClient extends PDU{
 						return "Les clients ne sont pas prets";
 					case PARTY_CANCELLED:
 						c.restartClient();
-						System.out.println("Partie Annulée!");
+						System.out.println("\n\nPartie Annulée!");
 						c.traiterMenuBienvenue(cx);
 						return "Partie annulé par le leader avant lancement";
 					case RAGEQUIT:
@@ -178,7 +179,7 @@ public class GestionProtocoleClient extends PDU{
 							if(c.getJoueur().getMyTurn()){
 								c.getPartie().traiterListeJoueurs(req_args, c);
 								c.getPartie().afficherListeJoueurs();
-								System.out.println(c.getJoueur().getCodeCouleurJoueur() + ": À vous de jouer");
+								//System.out.println(c.getJoueur().getCodeCouleurJoueur() + ": À vous de jouer");
 								this.traiterMenuJoueurDemarre(c, cx);
 								return "Liste des joueurs quand a mon tour";
 							}
@@ -222,7 +223,7 @@ public class GestionProtocoleClient extends PDU{
 					case DICES:
 						c.getJoueur().stockerDes(recu,c);
 						if(c.getJoueur().getMyTurn()){
-							System.out.println("Voici vos dés:\n" + c.getJoueur().voirDes());
+							System.out.println(c.getJoueur().getCodeCouleurJoueur() + " voici vos dés:\n" + c.getJoueur().voirDes());
 							if(c.getPartie().getIsLeader()){
 								this.traiterMenuLeaderPremier(c, cx);
 								return "Des du leader";
@@ -234,7 +235,7 @@ public class GestionProtocoleClient extends PDU{
 						}
 						else{
 							System.out.println("Voici vos dés :\n" + c.getJoueur().voirDes());
-							System.out.println("En attente du premier joueur");
+							System.out.println("En attente du premier joueur\n");
 							return "Dés Joueur en Attente";
 						}
 					case APLUS:
@@ -251,7 +252,7 @@ public class GestionProtocoleClient extends PDU{
 							c.getJoueur().setMyTurn(false);
 						}
 						else{
-							System.out.println("Tout Pile!");
+							System.out.println("Tout Pile!\n");
 						}
 						c.envoyer(cx, this.who1st());
 						return "Tout pile success";
@@ -261,7 +262,7 @@ public class GestionProtocoleClient extends PDU{
 							c.getJoueur().setMyTurn(false);
 						}
 						else{
-							System.out.println("Ce n'est pas Tout Pile!");
+							System.out.println("Ce n'est pas Tout Pile!\n");
 						}
 						c.envoyer(cx, this.who1st());
 						return "Tout Pile fail";
@@ -275,8 +276,23 @@ public class GestionProtocoleClient extends PDU{
 						c.getJoueur().setMyTurn(false);
 						c.envoyer(cx, this.who1st());
 						return "Liar fail";
+					case LOSER:
+						if( req_args.get(1).equals(c.getJoueur().getCodeCouleurJoueur())){
+							System.out.println("Vous êtes eliminé!");
+							c.restartClient();
+							c.traiterMenuBienvenue(cx);
+							return "Joueur Eliminé";
+						}else{
+							System.out.println("Le joueur: " + req_args.get(1) + " est eliminé");
+							return "Joueur Eliminé 2";
+						}
+					case WINNER:
+						System.out.println(req_args.get(1) + " est le vainqueur de cette Partie!");
+						c.restartClient();
+						c.traiterMenuBienvenue(cx);
+						return "Vainqueur";
 					case PARTY_CANCELLED:
-						System.out.println("Partie Annulée!");
+						System.out.println("\n\nPartie Annulée!");
 						c.restartClient();
 						c.traiterMenuBienvenue(cx);
 						return "Partie annulé par le leader pendant le jeu";
@@ -316,56 +332,89 @@ public class GestionProtocoleClient extends PDU{
 	
 	
 	/*TRAITER MENUS DANS PARTIE*/
+	
+	/**
+	 * traite le choix du leader de la partie avant de commancer celle ci
+	 * @param c Client à traiter
+	 * @param cx Connexion avec le serveur
+	 */
 	public void traiterMenuLeaderNonDemarre(Client c, ConnexionClient cx){
+		System.out.print(c.getJoueur().getNomJoueur() + " ("+c.getJoueur().getCodeCouleurJoueur()+") : ");
 		int choix = c.choixMenuClient(3,3); // 3: menu leader non demarré, 3: nombre choix max
 		switch(choix){
 			case 1:
-				c.envoyer(cx, this.launchParty());
+				c.envoyer(cx, this.launchParty());   
 				//c.envoyer(cx, this.who1st());
 				break;
 			case 2:
 				c.envoyer(cx, this.listPlayers());
 				break;
 			case 3:
-				c.envoyer(cx, this.stopParty());
+				c.envoyer(cx, this.stopParty()); // annuler partie
 				break;
 			default:
-				System.out.println("Erreur Saisie Menu Leader non demarré");
+				this.traiterMenuLeaderNonDemarre(c, cx); //on recommence
 				break;
 		}
 	}
 	
+	/**
+	 * traite le choix du leader si celui ci est le premier à jouer
+	 * @param c
+	 * @param cx
+	 */
 	public void traiterMenuLeaderPremier(Client c, ConnexionClient cx){
+		System.out.print(c.getJoueur().getNomJoueur() + " ("+c.getJoueur().getCodeCouleurJoueur()+") : ");
 		int choix = c.choixMenuClient(5,4); // 5: menu leader 1er a jouer, 4: nombre choix max
 		switch(choix){
-			case 1:
-				c.getPartie().setIsBeginning(false);
+			case 1:  //Surencher
+				ArrayList<Integer> arr = new ArrayList<>();
+				arr = c.getJoueur().choisirValeursPremier();        // choix des valeurs à jouer
+				if(arr.get(0) == 99){                               // si le client rentre une lettre
+					System.out.println("\nErreur Saisie Valeurs");
+					this.traiterMenuLeaderPremier(c, cx);
+					break;
+				}
+				c.getPartie().setIsBeginning(false); 
 				c.getJoueur().setMyTurn(false);
-				c.envoyer(cx,this.surencherirPremier(c.getJoueur().choisirValeursPremier()));
+				c.envoyer(cx,this.surencherirPremier(arr));
 				break;
-			case 2:
+			case 2:  // voir dés
 				System.out.println("Voici vos dés:\n" + c.getJoueur().voirDes());
 				this.traiterMenuLeaderPremier(c, cx);
 				break;
-			case 3:
+			case 3:   // lister joueurs
 				c.envoyer(cx, this.listPlayers());
 				break;
-			case 4:
+			case 4:   // annuler partie
 				c.envoyer(cx, this.stopParty());
 				break;
 			default:
-				System.out.println("Erreur Saisie Menu Leader Premier");
+				this.traiterMenuLeaderPremier(c, cx);  //on recommence
 				break;
 		}
 	}
 	
+	/**
+	 * traite le choix pour le joueur si celui ci est le premier
+	 * @param c
+	 * @param cx
+	 */
 	public void traiterMenuJoueurPremier(Client c, ConnexionClient cx){
+		System.out.print(c.getJoueur().getNomJoueur() + " ("+c.getJoueur().getCodeCouleurJoueur()+") : ");
 		int choix = c.choixMenuClient(7,4); // 7: menu joueur 1er a jouer, 3: nombre choix max
 		switch(choix){
 			case 1:
+				ArrayList<Integer> arr = new ArrayList<>();
+				arr = c.getJoueur().choisirValeursPremier();
+				if(arr.get(0) == 99){
+					System.out.println("\nErreur Saisie Valeurs");
+					this.traiterMenuJoueurPremier(c, cx);
+					break;
+				}
 				c.getPartie().setIsBeginning(false);
 				c.getJoueur().setMyTurn(false);
-				c.envoyer(cx,this.surencherirPremier(c.getJoueur().choisirValeursPremier()));
+				c.envoyer(cx,this.surencherirPremier(arr));
 				break;
 			case 2:
 				System.out.println("Voici vos dés:\n" + c.getJoueur().voirDes());
@@ -375,26 +424,39 @@ public class GestionProtocoleClient extends PDU{
 				c.envoyer(cx, this.listPlayers());
 				break;
 			case 4:
-				c.envoyer(cx, this.leaveParty());
+				c.envoyer(cx, this.leaveParty());   //quitter partie
 				break;
 			default:
-				System.out.println("Erreur Saisie Menu Joueur Premier");
+				this.traiterMenuJoueurPremier(c, cx);
 				break;
 		}
 	}
 	
+	/**
+	 * traite le choix du leader de la partie si celui ci n'est plus le premier
+	 * @param c
+	 * @param cx
+	 */
 	public void traiterMenuLeaderDemarre(Client c, ConnexionClient cx){
+		System.out.print(c.getJoueur().getNomJoueur() + " ("+c.getJoueur().getCodeCouleurJoueur()+") : ");
 		int choix = c.choixMenuClient(4,6); // 4: menu leader demarré, 6: nombre choix max
 		switch(choix){
 			case 1:
+				ArrayList<Integer> arr = new ArrayList<>();
+				arr = c.getJoueur().choisirValeursEnsuite(c.getPartie().getDernierNbrAnnonce(), c.getPartie().getDernierDeAnnonce());
+				if(arr.get(0) == 99){
+					System.out.println("\nErreur Saisie Valeurs");
+					this.traiterMenuLeaderDemarre(c, cx);
+					break;
+				}
 				c.getJoueur().setMyTurn(false);
-				c.envoyer(cx,this.surencherir(c.getJoueur().choisirValeursEnsuite(c.getPartie().getDernierNbrAnnonce(), c.getPartie().getDernierDeAnnonce())));
+				c.envoyer(cx,this.surencherir(arr));
 				break;
 			case 2:
-				c.envoyer(cx, this.liar());
+				c.envoyer(cx, this.liar());  //dire menteur
 				break;
 			case 3:
-				c.envoyer(cx, this.ttPile());
+				c.envoyer(cx, this.ttPile()); // dire tout pile
 				break;
 			case 4:
 				System.out.println("Voici vos dés:\n" + c.getJoueur().voirDes());
@@ -404,20 +466,34 @@ public class GestionProtocoleClient extends PDU{
 				c.envoyer(cx, this.listPlayers());
 				break;
 			case 6:
-				c.envoyer(cx, this.stopParty());
+				c.envoyer(cx, this.stopParty());   // annuler partie
 				break;
 			default:
-				System.out.println("Erreur Saisie Menu Leader Demarré");
+				this.traiterMenuLeaderDemarre(c, cx);  // on recommence
 				break;
 		}
 	}
 	
+	
+	/**
+	 * traite le choix du joueur si celui ci n'est pas le premier à jouer
+	 * @param c
+	 * @param cx
+	 */
 	public void traiterMenuJoueurDemarre(Client c, ConnexionClient cx){
+		System.out.print(c.getJoueur().getNomJoueur() + " ("+c.getJoueur().getCodeCouleurJoueur()+") : ");
 		int choix = c.choixMenuClient(6,6); // 6: menu joueur demarré, 6: nombre choix max
 		switch(choix){
 			case 1:
+				ArrayList<Integer> arr = new ArrayList<>();
+				arr = c.getJoueur().choisirValeursEnsuite(c.getPartie().getDernierNbrAnnonce(), c.getPartie().getDernierDeAnnonce());
+				if(arr.get(0) == 99){
+					System.out.println("\nErreur Saisie Valeurs");
+					this.traiterMenuJoueurDemarre(c, cx);
+					break;
+				}
 				c.getJoueur().setMyTurn(false);
-				c.envoyer(cx,this.surencherir(c.getJoueur().choisirValeursEnsuite(c.getPartie().getDernierNbrAnnonce(), c.getPartie().getDernierDeAnnonce())));
+				c.envoyer(cx,this.surencherir(arr));
 				break;
 			case 2:
 				c.envoyer(cx, this.liar());
@@ -433,16 +509,16 @@ public class GestionProtocoleClient extends PDU{
 				c.envoyer(cx, this.listPlayers());
 				break;
 			case 6:
-				c.envoyer(cx, this.leaveParty());
+				c.envoyer(cx, this.leaveParty());  //quitter partie
 				break;
 			default:
-				System.out.println("Erreur Saisie Menu Joueur Demarré");
+				this.traiterMenuJoueurDemarre(c, cx);
 				break;
 		}
 	}
 	/******************************************************************/
 	
-	/*  PDUS prêtes pour envoyer  */
+	/*  PDUS prêtes pour envoyer à l'appel de méthode */
 	public String createParty(){
 		return CREATE_PARTY;
 	}

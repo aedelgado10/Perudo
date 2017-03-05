@@ -202,6 +202,7 @@ public class Partie {
 		for(Joueur j : this.listeJoueurs){
 			if(j.getIdJoueur() == Integer.parseInt(parser.get(1))){
 				this.setDernierJoue(j);
+				//System.out.println("DERNIER: " + j.getCodeCouleurJoueur());
 			}
 		}
 		this.setDernierNbrAnnonce(Integer.parseInt(parser.get(2)));
@@ -227,15 +228,15 @@ public class Partie {
 	   }
 	   
 	   if( ttpile && c.getJoueur().getNbrDes() < 5){
-		   System.out.println("Vous recuperez un dé\n");
+		   System.out.println("Tout Pile! Vous recuperez un dé\n");
 		   c.getJoueur().recupererDe();
 	   }
 	   else if(ttpile){
-		   System.out.println("Vous avez le nombre maximal de dés\n");
+		   System.out.println("Tout Pile! Vous avez le nombre maximal de dés\n");
 	   }
 	   
 	   if( !ttpile && c.getJoueur().getNbrDes() > 0){
-		   System.out.println("Vous perdez un dé");
+		   System.out.println("Echec Tout Pile... Vous perdez un dé");
 		   c.getJoueur().enleverDe();
 		   if(c.getJoueur().getNbrDes() == 0){
 			   System.out.println("Vous êtes eliminé! (plus de dés)\n");
@@ -260,11 +261,11 @@ public class Partie {
 		   }
 		   
 		   if(liar && c.getJoueur().getMyTurn()){
-			   System.out.println("Vous aviez raison!\n");
+			   System.out.println("Menteur dévoilé: " + c.getPartie().getDernierJoueur().getCodeCouleurJoueur() + "! " + c.getJoueur().getCodeCouleurJoueur() + " Vous aviez raison!\n");
 		   }
 		   else if(liar){
-			   System.out.println("Menteur dévoilé\n");
-			   if(c.getPartie().dernierJoue.equals(c.getJoueur())){
+			   System.out.println("Menteur dévoilé: " + c.getPartie().dernierJoue.getCodeCouleurJoueur() + "\n");
+			   if(c.getPartie().dernierJoue.getCodeCouleurJoueur().equals(c.getJoueur().getCodeCouleurJoueur())){
 				   if(c.getJoueur().getNbrDes() > 0){
 					   System.out.println("Vous perdez un dé\n");
 					   c.getJoueur().enleverDe();
@@ -274,12 +275,11 @@ public class Partie {
 				   }
 			   }
 		   }
-		  
-		   
 		   
 		   if( !liar && c.getJoueur().getMyTurn()){
-			   System.out.println("Vous aviez tort");
+			   System.out.println(c.getJoueur().getCodeCouleurJoueur() + ": Vous aviez tort");
 			   if( c.getJoueur().getNbrDes() > 0){
+				   System.out.println("Vous perdez un dé!");
 				   c.getJoueur().enleverDe();
 				   if(c.getJoueur().getNbrDes() == 0){
 					   System.out.println("Vous êtes eliminé! (plus de dés)");
@@ -287,7 +287,7 @@ public class Partie {
 			   }
 		   }
 		   else if(!liar){
-			   System.out.println("Il n'y a pas de menteur!");
+			   System.out.println("Echec Tout Pile: Il n'y a pas de Menteur!");
 		   }
 		}
 	/**********************************************************************/
