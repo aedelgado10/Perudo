@@ -63,6 +63,10 @@ public class Joueur {
 		return this.gobelet;
 	}
 	
+	public void closeScan(){
+		this.scan.close();
+	}
+	
 	/************************************************************/
 	
 	/* VOIR DES */

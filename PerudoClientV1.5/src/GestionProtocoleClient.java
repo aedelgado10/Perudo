@@ -21,6 +21,7 @@ public class GestionProtocoleClient extends PDU{
 		
 		if(requete.equals(OK_LEAVE)){
 			System.out.println("Vous avez quitté la partie");
+			c.restartClient();
 			c.traiterMenuBienvenue(cx);
 			return "Leaving Party";
 		}
@@ -58,7 +59,7 @@ public class GestionProtocoleClient extends PDU{
 						return "Pas de Parties en Cours";
 					case WHATSUP:
 						System.out.println("Erreur, message: " + recu);
-						c.traiterMenuBienvenue(cx);
+						//c.traiterMenuBienvenue(cx);
 						return "Erreur serveur n'a pas compris: " + recu;
 					default:
 						return recu + "\nErreur: Pas de parties initialisées";
@@ -298,6 +299,10 @@ public class GestionProtocoleClient extends PDU{
 						return "Partie annulé par le leader pendant le jeu";
 					case RAGEQUIT:
 						System.out.println("Le Leader a quitté, partie Annulé!");
+						if(c.getJoueur().getMyTurn()){
+							c.restartClient();
+							return "La partie n'est plus en cours";
+						}
 						c.restartClient();
 						c.traiterMenuBienvenue(cx);
 						return "Ragequit du leader apres demarrage";
@@ -344,7 +349,6 @@ public class GestionProtocoleClient extends PDU{
 		switch(choix){
 			case 1:
 				c.envoyer(cx, this.launchParty());   
-				//c.envoyer(cx, this.who1st());
 				break;
 			case 2:
 				c.envoyer(cx, this.listPlayers());

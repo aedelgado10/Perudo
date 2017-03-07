@@ -32,6 +32,10 @@ public class Client {
 	public GestionProtocoleClient getGPC(){
 		return this.gPc;
 	}
+	
+	public void closeScan(){
+		this.scan.close();
+	}
 	/*********************************************************************/
 	
 	
@@ -185,7 +189,7 @@ public class Client {
 		System.out.println("********************************************");
 		System.out.println("********************************************");
 		System.out.println("*Provided by:                              *\n* Andrés E. DELGADO ANDRADE (Sud-Américain)* \n* Nady KERAGHEL (Africain)                 * \n* William PEREIRA DO CARMO (Européen)      *");
-		System.out.println("*                                          *\n* M1 STRI 2017©    -Le monde est connecté- *");
+		System.out.println("*                                          *\n* M1 STRI 2017©                            * \n*           - Connecting People since 1992 *");
 		System.out.println("********************************************\n");
 	}
 	/******************************************************************/
