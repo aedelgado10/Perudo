@@ -216,7 +216,7 @@ public class Client {
 			}catch(IOException e){
 				//cx.FermerConnexionServeur();
 				//e.printStackTrace();
-				System.out.println("Erreur: " + e);
+				System.out.println("Impossible de se connecter au serveur!");
 				client.afficherCredits();
 			}
 		}

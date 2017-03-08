@@ -255,7 +255,8 @@ public class GestionProtocoleClient extends PDU{
 						else{
 							System.out.println("Tout Pile!\n");
 						}
-						c.envoyer(cx, this.who1st());
+						c.getPartie().setIsBeginning(true);
+						c.envoyer(cx, this.listPlayers());
 						return "Tout pile success";
 					case TTPILE_NOK:
 						if(c.getJoueur().getMyTurn()){
@@ -265,17 +266,20 @@ public class GestionProtocoleClient extends PDU{
 						else{
 							System.out.println("Ce n'est pas Tout Pile!\n");
 						}
-						c.envoyer(cx, this.who1st());
+						c.getPartie().setIsBeginning(true);
+						c.envoyer(cx, this.listPlayers());
 						return "Tout Pile fail";
 					case LIAR_OK:
 						c.getPartie().traiterLiar(c, recu, true);
 						c.getJoueur().setMyTurn(false);
-						c.envoyer(cx, this.who1st());
+						c.getPartie().setIsBeginning(true);
+						c.envoyer(cx, this.listPlayers());
 						return "Liar success";
 					case LIAR_NOK:
 						c.getPartie().traiterLiar(c, recu, false);
 						c.getJoueur().setMyTurn(false);
-						c.envoyer(cx, this.who1st());
+						c.getPartie().setIsBeginning(true);
+						c.envoyer(cx, this.listPlayers());
 						return "Liar fail";
 					case LOSER:
 						if( req_args.get(1).equals(c.getJoueur().getCodeCouleurJoueur())){
@@ -288,10 +292,28 @@ public class GestionProtocoleClient extends PDU{
 							return "Joueur Eliminé 2";
 						}
 					case WINNER:
-						System.out.println(req_args.get(1) + " est le vainqueur de cette Partie!");
+						System.out.println("\n");
+						System.out.println(req_args.get(1) + " vous êtes le vainqueur de cette Partie!");
+						switch(req_args.get(2)){
+							case TTPILE_OK:
+								System.out.println("puisque vous avez reussi votre Tout Pile");
+			                    break;
+							case TTPILE_NOK:
+								System.out.println("puisque le joueur précedant n'a pas reussi son Tout Pile");
+								break;
+							case LIAR_OK:
+								System.out.println("puisque vous avez devoilé le Menteur");
+							    break;
+							case LIAR_NOK:
+								System.out.println("puisque vous n'avez devoilé le Menteur");
+								break;
+						}
 						c.restartClient();
 						c.traiterMenuBienvenue(cx);
 						return "Vainqueur";
+					case NO_DICES:
+						System.out.println(c.getJoueur().getNomJoueur() + " " + c.getJoueur().getCodeCouleurJoueur() + " Vous n'avez plus de dés!");
+						return "Plus de dés";
 					case PARTY_CANCELLED:
 						System.out.println("\n\nPartie Annulée!");
 						c.restartClient();

@@ -238,9 +238,9 @@ public class Partie {
 	   if( !ttpile && c.getJoueur().getNbrDes() > 0){
 		   System.out.println("Echec Tout Pile... Vous perdez un dé");
 		   c.getJoueur().enleverDe();
-		   if(c.getJoueur().getNbrDes() == 0){
+		  /* if(c.getJoueur().getNbrDes() == 0){
 			   System.out.println("Vous êtes eliminé! (plus de dés)\n");
-		   }
+		   }*/
 	   }
 	}
 	
@@ -269,9 +269,9 @@ public class Partie {
 				   if(c.getJoueur().getNbrDes() > 0){
 					   System.out.println("Vous perdez un dé\n");
 					   c.getJoueur().enleverDe();
-					   if(c.getJoueur().getNbrDes() == 0){
+					   /*if(c.getJoueur().getNbrDes() == 0){
 						   System.out.println("Vous êtes eliminé! (plus de dés)\n");
-					   }
+					   }*/
 				   }
 			   }
 		   }
@@ -281,9 +281,9 @@ public class Partie {
 			   if( c.getJoueur().getNbrDes() > 0){
 				   System.out.println("Vous perdez un dé!");
 				   c.getJoueur().enleverDe();
-				   if(c.getJoueur().getNbrDes() == 0){
+				   /*if(c.getJoueur().getNbrDes() == 0){
 					   System.out.println("Vous êtes eliminé! (plus de dés)");
-				   }
+				   }*/
 			   }
 		   }
 		   else if(!liar){

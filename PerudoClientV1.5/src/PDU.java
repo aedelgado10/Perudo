@@ -60,6 +60,7 @@ public class PDU {
 	/* Lancer les dés */
 	public static final String ROLL = "ROLL";						// Lancer les dés
 	public static final String DICES = "DICES";						// valeurs des dés
+	public static final String NO_DICES = "NDICES";
 	
 	/* Faire des annonces */
 	public static final String TTPILE = "TTPILE";					// Dire un toutpile
